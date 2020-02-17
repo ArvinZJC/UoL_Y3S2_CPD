@@ -1,0 +1,17 @@
+## Ignore unnecessary files to avoid pushing them.
+
+# React Native Project
+node_modules/**/*
+.expo/*
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
+
+# VSCode Extension: React Native Tools
+.vscode/.react
