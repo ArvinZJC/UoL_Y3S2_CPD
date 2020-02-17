@@ -1,4 +1,4 @@
-# My First Snack app
+# My First Snack App
 
 The app is developed in the Week 1's workshop. It enables the user to switch between the home activity and the profile activity. It can also create a new profile screen.
 
