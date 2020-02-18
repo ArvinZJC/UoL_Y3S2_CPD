@@ -42,14 +42,12 @@ export default class HomeScreen extends React.Component
 					<ItemsLayout>
                         {
                             picList.map((pic, index) =>
-                                <CardArea key={index}>
-                                    <TouchableOpacity onPress={() => navigate('Character')}>
-                                        <Card
-								            cardtitle={pic.title}
-								            cardstrength={pic.strength}
-								            cardsrc={pic.file} />
-                                    </TouchableOpacity>
-                                </CardArea>
+								<TouchableOpacity onPress={() => navigate('Character')} key={index}>
+									<Card
+										cardtitle={pic.title}
+										cardstrength={pic.strength}
+										cardsrc={pic.file} />
+								</TouchableOpacity>
 							)
 						}
 					</ItemsLayout>
@@ -113,12 +111,7 @@ const Subtitle = styled.Text`
 `;
 
 const ItemsLayout = styled.View`
-    margin: 10px;
-    margin-bottom: 20px;
-    flex-flow: row wrap;
-`;
-
-const CardArea = styled.View`
-    width: 50%;
-    padding: 10px;
+	flex-flow: row wrap;
+	justify-content: space-evenly;
+	width: 90%;
 `;
