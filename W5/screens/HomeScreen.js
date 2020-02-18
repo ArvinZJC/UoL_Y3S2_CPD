@@ -18,9 +18,9 @@ export default class HomeScreen extends React.Component
 			<Container>
 				<ScrollView>
 					<Titlebar>
-						<Avatar source={require('../assets/avatar.png')} />
+						<Avatar source={require('../assets/avatar.jpg')} />
 						<Title>Welcome back,</Title>
-						<Name>DR Khaled</Name>
+						<Name>Arvin</Name>
 						<Ionicons
 							name="md-cart"
 							size={32}
