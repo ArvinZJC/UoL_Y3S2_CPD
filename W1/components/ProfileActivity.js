@@ -7,14 +7,15 @@ class ProfileActivity extends React.Component
     static navigationOptions =
     {
         title: 'Profile',
-        headerStyle: {
-        backgroundColor: '#73C6B6',
+        headerStyle:
+        {
+            backgroundColor: '#73C6B6',
         },
     };
 
     render()
     {
-        return (
+        return(
             /*
              * below is a container with 3 buttons in it;
              * note 3 same styles have been applied

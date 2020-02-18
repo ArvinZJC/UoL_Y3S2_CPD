@@ -29,7 +29,7 @@ class HomeActivity extends React.Component
     }
 }
 
-// these are styles they are applied in the <View style = { styles.container }>
+// these are styles they are applied in the <View style={styles.container}>
 const styles = StyleSheet.create(
 {
     container:
