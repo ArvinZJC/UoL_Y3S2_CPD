@@ -74,7 +74,7 @@ const Container = styled.View`
 
 const HeaderImage = styled.Image`
 	width: 100%;
-	height: 40%
+	height: 40%;
 	background: ${colours.blue};
 `;
 
@@ -92,7 +92,7 @@ const TagContainer = styled.View`
 	flex-direction: row;
 	width: 100%;
 	margin-left: 8%;
-	margin-top: 8%};
+	margin-top: 8%;
 `;
 
 const TagBody = styled.View`
