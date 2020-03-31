@@ -30,7 +30,7 @@ export default class HomeScreen extends React.Component
 					<ScrollView
 						horizontal={true}
 						style={{
-							marginLeft: 10,
+							marginLeft: 5,
 							marginRight: 20,
 							marginVertical: 30,
 							flexDirection: 'row'
@@ -92,12 +92,12 @@ const Name = styled.Text`
 `;
 
 const items = [
-	{text: 'Avengers\t\t|'},
-	{text: 'Thor\t\t|'},
-	{text: 'Ironman\t\t|'},
-	{text: 'Captain America\t\t|'},
-	{text: 'Guardians\t\t|'},
-	{text: 'Black Widow\t\t|'},
+	{text: 'Avengers    |'},
+	{text: 'Thor    |'},
+	{text: 'Ironman    |'},
+	{text: 'Captain America    |'},
+	{text: 'Guardians    |'},
+	{text: 'Black Widow    |'},
 	{text: 'Hawkeye'}
 ];
 
@@ -106,12 +106,11 @@ const Subtitle = styled.Text`
 	color: ${colours.blue};
 	font-weight: 500;
 	margin-top: 10px;
-	margin-left: 25px;
+	margin-left: 20px;
 	text-transform: uppercase;
 `;
 
 const ItemsLayout = styled.View`
 	flex-flow: row wrap;
-	justify-content: space-evenly;
-	width: 90%;
+	margin: 10px;
 `;
