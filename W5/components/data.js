@@ -7,37 +7,37 @@ export const picList = [
     {
         title: 'Cap',
         file: require('../assets/pic2.jpg'),
-            strength: '100',
+            strength: '98',
     },
     {
         title: 'Thor',
         file: require('../assets/pic3.jpg'),
-            strength: '100',
+            strength: '90',
     },
     {
-        title: 'Black\nWidow',
+        title: 'Black Widow',
         file: require('../assets/pic4.jpg'),
-            strength: '100',
+            strength: '95',
     },
     {
         title: 'Hawkeye',
         file: require('../assets/pic5.jpg'),
-            strength: '100',
+            strength: '87',
     },
     {
         title: 'Six',
         file: require('../assets/pic6.jpg'),
-            strength: '100',
+            strength: '80',
     },
     {
         title: 'Seven',
         file: require('../assets/pic7.jpg'),
-            strength: '100',
+            strength: '82',
     },
     {
         title: 'Eight',
         file: require('../assets/pic8.jpg'),
-            strength: '100',
+            strength: '99',
     },
     {
         title: 'Nine',
@@ -57,6 +57,6 @@ export const picList = [
     {
         title: 'Twelve',
         file: require('../assets/pic12.jpg'),
-            strength: '100',
+            strength: '79',
     }
 ];

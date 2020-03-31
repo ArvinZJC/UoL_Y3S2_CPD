@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, TouchableOpacity} from 'react-native';
+import {StatusBar, ScrollView, TouchableOpacity} from 'react-native';
 import styled from 'styled-components';
 import {Ionicons} from '@expo/vector-icons';
 
@@ -16,6 +16,7 @@ export default class HomeScreen extends React.Component
 
 		return(
 			<Container>
+				<StatusBar barStyle="light-content" />
 				<ScrollView>
 					<Titlebar>
 						<Avatar source={require('../assets/avatar.jpg')} />
@@ -42,7 +43,7 @@ export default class HomeScreen extends React.Component
 					<ItemsLayout>
                         {
                             picList.map((pic, index) =>
-								<TouchableOpacity onPress={() => navigate('Character')} key={index}>
+								<TouchableOpacity onPress={() => navigate('Character', {name: pic.title, picture: pic.file, power: pic.strength})} key={index}>
 									<Card
 										cardtitle={pic.title}
 										cardstrength={pic.strength}
@@ -82,7 +83,7 @@ const Avatar = styled.Image`
 const Title = styled.Text`
 	font-size: 20px;
 	font-weight: 500;
-	color: ${colours.white}
+	color: ${colours.white};
 `;
 
 const Name = styled.Text`

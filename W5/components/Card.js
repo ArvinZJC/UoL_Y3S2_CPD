@@ -1,6 +1,8 @@
 import React from 'react';
-import {Dimensions} from 'react-native';
 import styled from 'styled-components';
+
+import screenSize from '../components/ScreenSize';
+
 
 const Card = props =>
     <Container>
@@ -17,7 +19,7 @@ const Card = props =>
 export default Card;
 
 const defaultMargin = 10;
-const cardWidth = (Dimensions.get('window').width - defaultMargin * 8) / 3; // use the window's width to decide the card's width
+const cardWidth = (screenSize.width - defaultMargin * 8) / 3; // use the window's width to decide the card's width
 const cardHeight = cardWidth * 2;
 
 const Container = styled.View`
