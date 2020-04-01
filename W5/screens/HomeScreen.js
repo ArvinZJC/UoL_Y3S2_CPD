@@ -8,6 +8,7 @@ import Categories from '../components/Categories';
 import Card from '../components/Card';
 import {picList} from '../components/data';
 
+
 export default class HomeScreen extends React.Component
 {
 	render()
