@@ -1,22 +1,29 @@
+/*
+ * @Description: the entry file of the app
+ * @Version: 1.0.0.20200401
+ * @Author: Jichen Zhao
+ * @Date: 2020-03-31 13:44:57
+ * @Last Editors: Jichen Zhao
+ * @LastEditTime: 2020-04-01 23:38:01
+ */
+
+import 'react-native-gesture-handler'; /* follow the official guides to add this at the top to avoid any crashes in production */
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+
+import HomeScreen from './screens/HomeScreen';
+
+
+const Stack = createStackNavigator();
 
 export default function App()
 {
-	return (
-		<View style={styles.container}>
-			<Text>Open up App.js to start working on your app!</Text>
-		</View>
+	return(
+		<NavigationContainer>
+			<Stack.Navigator>
+				<Stack.Screen name='Home' component={HomeScreen}/>
+			</Stack.Navigator>
+		</NavigationContainer>
 	);
 }
-
-const styles = StyleSheet.create(
-{
-	container:
-	{
-		flex: 1,
-		backgroundColor: '#fff',
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-});
