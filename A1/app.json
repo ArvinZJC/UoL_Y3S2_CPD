@@ -14,7 +14,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ff5050"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,12 +22,20 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.arvinzjc.xhealth"
+      "bundleIdentifier": "com.arvinzjc.xhealth",
+      "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.arvinzjc.xhealth"
-    }
+      "package": "com.arvinzjc.xhealth",
+      "versionCode": 1
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#ff5050"
+    },
+    "description": "(TODO: X Health description)"
   }
 }
