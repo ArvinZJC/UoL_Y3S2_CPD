@@ -17,14 +17,14 @@ export default class HomeScreen extends React.Component
 
 		return(
 			<Container>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<ScrollView>
 					<Titlebar>
 						<Avatar source={require('../assets/avatar.jpg')} />
 						<Title>Welcome back,</Title>
 						<Name>Arvin</Name>
 						<Ionicons
-							name="md-cart"
+							name='md-cart'
 							size={32}
 							color={colours.red}
 							style={{position: 'absolute', right: 20, top: 5}} />

@@ -34,7 +34,7 @@ class CharacterScreen extends React.Component
 
 		return(
 			<Container>
-				<StatusBar barStyle="light-content" />
+				<StatusBar barStyle='light-content' />
 				<HeaderImage source={picture} />
 				<Body>
 					<TagContainer>
