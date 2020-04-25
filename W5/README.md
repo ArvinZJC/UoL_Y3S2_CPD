@@ -7,4 +7,5 @@ The app is my first React Native app set up by Expo CLI developed in the Week 5'
 
 ## ATTENTION
 
-1. By 1 April 2020, everything looks good with VS Code + Node.js 13.8.0. For more basic info about the packages/dependencies used, please refer to [the specified JSON file](https://github.com/ArvinZJC/UoL_Y3S2_CPD/blob/master/W5/package.json).
+1. By 1 April 2020, everything looks good with VS Code + Node.js 13.8.0. For more basic info about the dependencies used, please refer to [the specified JSON file](https://github.com/ArvinZJC/UoL_Y3S2_CPD/blob/master/W5/package.json).
+2. You can type `npm install` in the comand prompt to install all dependencies of the app.
