@@ -1,16 +1,14 @@
 /*
  * @Description: the home screen
- * @Version: 1.0.2.20200403
+ * @Version: 1.0.5.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-04-01 23:10:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-03 00:01:47
+ * @LastEditTime: 2020-04-25 00:21:09
  */
 
 import React from 'react';
-import styled from 'styled-components';
-import {StatusBar, ScrollView} from 'react-native';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {StatusBar, Image} from 'react-native';
 import {useColorScheme} from 'react-native-appearance';
 import {useNavigation} from '@react-navigation/native';
 
@@ -18,73 +16,74 @@ import Colours_default from '../values/Colours';
 import Colours_night from '../values/Colours_night';
 import Strings from '../values/Strings';
 import Dimens from '../values/Dimens';
+import {
+	RootLayout,
+	MainContentArea,
+	ImageArea,
+	Card,
+	CardTouchArea,
+	CardContentArea,
+	BoldPrimaryText} from '../values/Styles';
+
+import XPedometer from '../components/XPedometer';
 
 
 const StepsScreen_route = 'Steps';
+const WeightScreen_route = 'Weight';
 
-function Card(props)
+export default function HomeScreen()
 {
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
-
-	const CardLayout = styled.View`
-		border-radius: ${Dimens.card_borderRadius};
-		background-color: ${props.backgroundColor};
-		margin: ${Dimens.margin};
-	`;
-
-	const CardArea = styled.TouchableHighlight`
-		border-radius: ${Dimens.card_borderRadius};
-	`;
-
-	const CardContainer = styled.View`
-		padding: ${Dimens.padding};
-	`;
-
-	const CardTitle = styled.Text`
-		color: ${colours.cardPrimaryText};
-		font-size: ${Dimens.primaryTextSize};
-		font-weight: bold;
-	`;
-
-	return(
-		<CardLayout>
-			<CardArea onPress={() => navigation.navigate(props.navigateTo)} underlayColor={colours.stepsCardBackground_pressed}>
-				<CardContainer>
-					<CardTitle>{props.cardTitle}</CardTitle>
-					<AnimatedCircularProgress
-						size={Dimens.circleProgressSize}
-						width={Dimens.circleProgressWidth}
-						backgroundWidth={Dimens.circleProgressWidth}
-						fill={80}
-						tintColor={colours.cardPrimaryText}
-						backgroundColor={colours.circleProgressBackground}
-						lineCap='round' />
-				</CardContainer>
-			</CardArea>
-		</CardLayout>
-	)
-}
-
-export default function HomeScreen()
-{
-	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
-
-	const RootLayout = styled.View`
-		background-color: ${colours.appTheme};
-		flex: 1;
-		align-items: center;
-		justify-content: center;
-	`;
+	const alertContentTypeId = 'alert';
+	const contentWithProgressTypeId = 'with-progess';
 	
 	return(
-		<RootLayout>
+		<RootLayout style={{backgroundColor: colours.appTheme}}>
 			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
-			<ScrollView style={{width: '100%'}}>
-				<Card cardTitle={Strings.stepsScreen_title} navigateTo={StepsScreen_route} backgroundColor={colours.stepsCardBackground} />
-			</ScrollView>
+			<XPedometer
+				contentTypeId={alertContentTypeId}
+				alertBackgroundColour={colours.errorAlertBackground}
+				warningBackgroundColour={colours.warningAlertBackground}
+				successBackgroundColour={colours.successAlertBackground}
+				borderColour={colours.appTheme}
+				textColour={colours.cardPrimaryText}
+				goal={10000} />
+			<MainContentArea>
+				<ImageArea>
+					<Card style={{
+						marginTop: Dimens.paddingValue,
+						backgroundColor: colours.stepsCardBackground,
+						shadowColor: colours.cardShadowColour}}>
+						<Image
+							source={require('../assets/icon.png')}
+							style={{
+								width: Dimens.logoSideLengthValue,
+								height: Dimens.logoSideLengthValue,
+								borderRadius: Dimens.cardBorderRadiusValue}} />
+					</Card>
+				</ImageArea>
+				<Card style={{backgroundColor: colours.stepsCardBackground, shadowColor: colours.cardShadowColour}}>
+					<CardTouchArea onPress={() => navigation.navigate(StepsScreen_route)} underlayColor={colours.stepsCardBackground_pressed}>
+						<CardContentArea>
+							<BoldPrimaryText style={{color: colours.cardPrimaryText}}>{Strings.stepsScreen_title}</BoldPrimaryText>
+							<XPedometer
+								contentTypeId={contentWithProgressTypeId}
+								textColour={colours.cardPrimaryText}
+								circularProgressBackgroundColour={colours.circleProgressBackground}
+								goal={10000} />
+						</CardContentArea>
+					</CardTouchArea>
+				</Card>
+				<Card style={{backgroundColor: colours.stepsWeightBackground, shadowColor: colours.cardShadowColour, marginBottom: 30}}>
+					<CardTouchArea onPress={() => navigation.navigate(WeightScreen_route)} underlayColor={colours.stepsWeightBackground_pressed}>
+						<CardContentArea>
+							<BoldPrimaryText style={{color: colours.cardPrimaryText}}>{Strings.weightScreen_title}</BoldPrimaryText>
+						</CardContentArea>
+					</CardTouchArea>
+				</Card>
+			</MainContentArea>
 		</RootLayout>
-	);
+	); // TODO: step goal
 }

@@ -1,13 +1,13 @@
 /*
  * @Description: the entry file of the app
- * @Version: 1.0.2.20200403
+ * @Version: 1.0.3.20200424
  * @Author: Jichen Zhao
  * @Date: 2020-03-31 13:44:57
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-03 00:06:14
+ * @LastEditTime: 2020-04-24 22:56:02
  */
 
-import 'react-native-gesture-handler'; /* follow the official guides to add this at the top to avoid any crashes in production */
+import 'react-native-gesture-handler'; /* follow the official guides to add it at the top to avoid any crashes in production */
 import React from 'react';
 import styled from 'styled-components';
 import {Platform} from 'react-native';
@@ -19,6 +19,7 @@ import {Ionicons} from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import StepsScreen from './screens/StepsScreen';
+import WeightScreen from './screens/WeightScreen';
 
 import Colours_default from './values/Colours';
 import Colours_night from './values/Colours_night';
@@ -30,6 +31,7 @@ const Stack = createStackNavigator();
 const HomeScreen_route = 'Home';
 const SettingsScreen_route = 'Settings';
 const StepsScreen_route = 'Steps';
+const WeightScreen_route = 'Weight';
 
 const HeaderRightButton_iconSize = 22;
 const HeaderRightButton_marginRight = 10;
@@ -85,19 +87,29 @@ export default function App()
 						component={HomeScreen}
 						options={{
 							title: Strings.appName,
-							headerRight: () => (<SettingsButton />)}} />
+							headerRight: () => (<SettingsButton />)
+						}} />
 					<Stack.Screen
 						name={SettingsScreen_route}
 						component={SettingsScreen}
 						options={{
 							title: Strings.settingsScreen_title,
-							headerBackTitle: Strings.homeScreen_label}} />
+							headerBackTitle: Strings.homeScreen_label
+						}} />
 					<Stack.Screen
 						name={StepsScreen_route}
 						component={StepsScreen}
 						options={{
 							title: Strings.stepsScreen_title,
-							headerBackTitle: Strings.homeScreen_label}} />
+							headerBackTitle: Strings.homeScreen_label
+						}} />
+					<Stack.Screen
+						name={WeightScreen_route}
+						component={WeightScreen}
+						options={{
+							title: Strings.weightScreen_title,
+							headerBackTitle: Strings.homeScreen_label
+						}} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</AppearanceProvider>
