@@ -4,7 +4,7 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 15:15:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 02:01:11
+ * @LastEditTime: 2020-04-25 03:54:18
  */
 
 import React from 'react';
@@ -42,7 +42,10 @@ export default function StepsScreen()
 				textColour={colours.cardPrimaryText}
 				goal={10000} />
 			<MainContentArea>
-				<Card style={{backgroundColor: colours.defaultCardBackground, shadowColor: colours.cardShadowColour}}>
+				<Card style={{
+					marginTop: Dimens.paddingValue,
+					backgroundColor: colours.defaultCardBackground,
+					shadowColor: colours.cardShadowColour}}>
 					<XPedometer
 						contentTypeId={chartContentTypeId}
 						chartTitleColour={colours.contentText}

@@ -1,10 +1,10 @@
 /*
  * @Description: a universal style sheet
- * @Version: 1.0.1.20200424
+ * @Version: 1.0.2.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 18:11:40
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-24 18:54:55
+ * @LastEditTime: 2020-04-25 16:00:53
  */
 
 import styled from 'styled-components';
@@ -67,4 +67,14 @@ export const ContentText = styled.Text`
 export const ExplanationText = styled.Text`
     font-size: ${Dimens.explanationTextSize};
     text-align: justify;
+`;
+
+export const SettingRowContainer = styled.View`
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: ${Dimens.mediumInterval};
+	padding-bottom: ${Dimens.mediumInterval};
+	padding-left: ${Dimens.margin};
+	padding-right: ${Dimens.margin};
 `;

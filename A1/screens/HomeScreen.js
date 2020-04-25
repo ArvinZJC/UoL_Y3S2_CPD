@@ -4,7 +4,7 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-01 23:10:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 00:21:09
+ * @LastEditTime: 2020-04-25 16:44:27
  */
 
 import React from 'react';
@@ -59,8 +59,8 @@ export default function HomeScreen()
 						<Image
 							source={require('../assets/icon.png')}
 							style={{
-								width: Dimens.logoSideLengthValue,
-								height: Dimens.logoSideLengthValue,
+								width: Dimens.logoSideLength,
+								height: Dimens.logoSideLength,
 								borderRadius: Dimens.cardBorderRadiusValue}} />
 					</Card>
 				</ImageArea>

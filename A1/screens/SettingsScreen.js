@@ -4,13 +4,15 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 08:41:47
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 00:53:59
+ * @LastEditTime: 2020-04-25 18:25:00
  */
 
 import React from 'react';
-import {StatusBar, View, TouchableHighlight} from 'react-native';
+import {StatusBar, View, TouchableHighlight, Linking} from 'react-native';
 import {useColorScheme} from 'react-native-appearance';
+import {useNavigation} from '@react-navigation/native';
 import styled from 'styled-components';
+import Constants from 'expo-constants';
 
 import Colours_default from '../values/Colours';
 import Colours_night from '../values/Colours_night';
@@ -20,13 +22,27 @@ import {
 	RootLayout,
 	MainContentArea,
 	ContentText,
-	ExplanationText} from '../values/Styles';
+	ExplanationText,
+	SettingRowContainer} from '../values/Styles';
+
+import {
+	XGenderPicker,
+	XBirthdayPicker,
+	XHeightPicker,
+	XWeightPicker,
+	XStepGoalPicker} from '../components/XPicker';
 
 
 export default function SettingsScreen()
 {
+	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const AboutScreen_route = 'About';
+	const weightGoalPickerTypeId = 'goal';
+	const developerEmail = 'zjcarvin@outlook.com';
+	const standaloneAppTypeId = 'standalone';
+	const appVersion = '1.0.0';
 
 	const Section = styled.View`
 		margin-top: ${Dimens.margin};
@@ -35,14 +51,6 @@ export default function SettingsScreen()
 	const SectionHeader = styled.View`
 		margin-left: ${Dimens.margin};
 		margin-right: ${Dimens.margin};
-	`;
-
-	const SettingRowContainer = styled.View`
-		flex-direction: row;
-		padding-top: ${Dimens.padding};
-		padding-bottom: ${Dimens.padding};
-		padding-left: ${Dimens.margin};
-		padding-right: ${Dimens.margin};
 	`;
 	
 	return(
@@ -54,32 +62,16 @@ export default function SettingsScreen()
 						<ExplanationText style={{color: colours.settingsSectionHeader, fontWeight: 'bold'}}>{Strings.settingsScreen_sectionBasicInfo_header}</ExplanationText>
 					</SectionHeader>
 					<View>
-						<TouchableHighlight onPress={() => console.log('Gender')} underlayColor={colours.settingBackground_pressed}>
-							<SettingRowContainer>
-								<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionBasicInfo_genderTitle}</ContentText>
-							</SettingRowContainer>
-						</TouchableHighlight>
+						<XGenderPicker underlayColour={colours.itemBackground_pressed} titleColour={colours.primaryText} />
+					</View>		
+					<View>
+						<XBirthdayPicker underlayColour={colours.itemBackground_pressed} titleColour={colours.primaryText} />
 					</View>
 					<View>
-						<TouchableHighlight onPress={() => console.log('Birthday')} underlayColor={colours.settingBackground_pressed}>
-							<SettingRowContainer>
-								<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionBasicInfo_birthdayTitle}</ContentText>
-							</SettingRowContainer>
-						</TouchableHighlight>
+						<XHeightPicker underlayColour={colours.itemBackground_pressed} titleColour={colours.primaryText} />
 					</View>
 					<View>
-						<TouchableHighlight onPress={() => console.log('Height')} underlayColor={colours.settingBackground_pressed}>
-							<SettingRowContainer>
-								<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionBasicInfo_heightTitle}</ContentText>
-							</SettingRowContainer>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight onPress={() => console.log('Weight')} underlayColor={colours.settingBackground_pressed}>
-							<SettingRowContainer>
-								<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionBasicInfo_weightTitle}</ContentText>
-							</SettingRowContainer>
-						</TouchableHighlight>
+						<XWeightPicker underlayColour={colours.itemBackground_pressed} titleColour={colours.primaryText} />
 					</View>
 				</Section>
 				<Section>
@@ -87,19 +79,30 @@ export default function SettingsScreen()
 						<ExplanationText style={{color: colours.settingsSectionHeader, fontWeight: 'bold'}}>{Strings.settingsScreen_sectionGoals_header}</ExplanationText>
 					</SectionHeader>
 					<View>
-						<TouchableHighlight onPress={() => console.log('Step goal')} underlayColor={colours.settingBackground_pressed}>
-							<SettingRowContainer>
-								<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionGoals_stepGoalTitle}</ContentText>
-							</SettingRowContainer>
-						</TouchableHighlight>
+						<XStepGoalPicker underlayColour={colours.itemBackground_pressed} titleColour={colours.primaryText} />
 					</View>
 					<View>
-						<TouchableHighlight onPress={() => console.log('Weight goal')} underlayColor={colours.settingBackground_pressed}>
-							<SettingRowContainer>
-								<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionGoals_weightGoalTitle}</ContentText>
-							</SettingRowContainer>
-						</TouchableHighlight>
+						<XWeightPicker
+							typeId={weightGoalPickerTypeId}
+							underlayColour={colours.itemBackground_pressed}
+							titleColour={colours.primaryText} />
 					</View>
+				</Section>
+				<Section>
+					<SectionHeader>
+						<ExplanationText style={{color: colours.settingsSectionHeader, fontWeight: 'bold'}}>{Strings.settingsScreen_sectionOthers_header}</ExplanationText>
+					</SectionHeader>
+					<TouchableHighlight onPress={() => Linking.openURL('mailto:' + developerEmail)}  underlayColor={colours.itemBackground_pressed}>
+						<SettingRowContainer style={{paddingTop: Dimens.paddingValue, paddingBottom: Dimens.paddingValue}}>
+							<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionOthers_sendFeedbackTitle}</ContentText>
+						</SettingRowContainer>
+					</TouchableHighlight>
+					<TouchableHighlight onPress={() => navigation.navigate(AboutScreen_route)}  underlayColor={colours.itemBackground_pressed}>
+						<SettingRowContainer style={{paddingTop: Dimens.paddingValue, paddingBottom: Dimens.paddingValue}}>
+							<ContentText style={{color: colours.primaryText}}>{Strings.settingsScreen_sectionOthers_aboutAppTitle_start + Strings.appName}</ContentText>
+							<ExplanationText style={{color: colours.explanationText}}>{Strings.aboutAppExplanation_start + (Constants.appOwnership === standaloneAppTypeId ? Constants.nativeAppVersion : appVersion)}</ExplanationText>
+						</SettingRowContainer>
+					</TouchableHighlight>
 				</Section>
 			</MainContentArea>
 		</RootLayout>

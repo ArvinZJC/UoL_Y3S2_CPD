@@ -4,13 +4,14 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 01:48:58
+ * @LastEditTime: 2020-04-25 16:44:55
  */
 
 import React from 'react';
-import {Platform, Dimensions, View} from 'react-native';
+import {Platform, Dimensions} from 'react-native';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {BarChart} from 'react-native-chart-kit';
+import styled from 'styled-components';
 
 import Strings from '../values/Strings';
 import Dimens from '../values/Dimens';
@@ -22,7 +23,7 @@ import {
     ContentText,
     ExplanationText} from '../values/Styles';
 
-import Alert from '../components/Alert';
+import XAlert from './XAlert';
 
 
 const Pedometer = Platform.OS === 'ios' ? require('expo-sensors/build/Pedometer') : require('expo-legacy/build/Pedometer'); // from Expo 34.0.0, great changes have taken place in the pedometer implementation - it is incomplete and has some issues with Android (please refer to the issue: https://github.com/expo/expo/issues/4895)
@@ -260,6 +261,11 @@ export default class XPedometer extends React.Component
 
     render()
     {
+        const AlertArea = styled.View`
+            width: 100%;
+            margin-bottom: 10px;
+        `;
+
         switch (this.props.contentTypeId)
         {
             case alertContentTypeId:
@@ -271,29 +277,31 @@ export default class XPedometer extends React.Component
                             if (this.state.todayStepCountError === null)
                             {
                                 return(
-                                    <Alert
-                                        backgroundColour={this.props.errorAlertBackgroundColour}
-                                        borderColour={this.props.borderColour}
-                                        textColour={this.props.textColour}
-                                        message={Strings.alertSteps_hasPastDayStepCountError} />
+                                    <AlertArea>
+                                        <XAlert
+                                            backgroundColour={this.props.errorAlertBackgroundColour}
+                                            borderColour={this.props.borderColour}
+                                            textColour={this.props.textColour}
+                                            message={Strings.alertSteps_hasPastDayStepCountError} />
+                                    </AlertArea>
                                 );
                             }
                             else
                             {
                                 console.log('Failed to get today\'s step count. ' + this.state.todayStepCountError);
                                 return(
-                                    <View style={{width: '100%'}}>
-                                        <Alert
+                                    <AlertArea>
+                                        <XAlert
                                             backgroundColour={this.props.alertBackgroundColour}
                                             borderColour={this.props.borderColour}
                                             textColour={this.props.textColour}
                                             message={Strings.alertSteps_hasPastDayStepCountError} />
-                                        <Alert
+                                        <XAlert
                                             backgroundColour={this.props.alertBackgroundColour}
                                             borderColour={this.props.borderColour}
                                             textColour={this.props.textColour}
                                             message={Strings.alertSteps_todayStepCountUnavailable} />
-                                    </View>
+                                    </AlertArea>
                                 );
                             } // end if...else
                         }
@@ -304,11 +312,13 @@ export default class XPedometer extends React.Component
                                 if (this.state.todayStepCount === this.props.goal)
                                 {
                                     return(
-                                        <Alert
-                                            backgroundColour={this.props.successBackgroundColour}
-                                            borderColour={this.props.borderColour}
-                                            textColour={this.props.textColour}
-                                            message={Strings.alertSteps_goalAchieved} />
+                                        <AlertArea>
+                                            <XAlert
+                                                backgroundColour={this.props.successBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_goalAchieved} />
+                                        </AlertArea>
                                     );
                                 }
                                 else
@@ -337,11 +347,13 @@ export default class XPedometer extends React.Component
                         return null;
                 } // end switch-case
                 return(
-                    <Alert
-                        backgroundColour={this.props.alertBackgroundColour}
-                        borderColour={this.props.borderColour}
-                        textColour={this.props.textColour}
-                        message={this.message} />
+                    <AlertArea>
+                        <XAlert
+                            backgroundColour={this.props.alertBackgroundColour}
+                            borderColour={this.props.borderColour}
+                            textColour={this.props.textColour}
+                            message={this.message} />
+                    </AlertArea>
                 );
             
             case chartContentTypeId:
@@ -442,7 +454,7 @@ export default class XPedometer extends React.Component
                                 fontSize: Dimens.cardBigTextSizeValue}}>
                                 {this.state.todayStepCount}
                             </BoldPrimaryText>
-                            <ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.textColour}}>/{this.props.goal + Strings.cardSteps_goalUnit}</ExplanationText>
+                            <ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.textColour}}>/{this.props.goal + Strings.stepUnit}</ExplanationText>
                         </CardRowContainer>
                         <CardRowContainer style={{alignItems: 'flex-end'}}>
                             <AnimatedCircularProgress
@@ -469,7 +481,7 @@ export default class XPedometer extends React.Component
                     <CardColumnContainer>
 						<ContentText style={{color: this.props.titleColour}}>{Strings.stepsScreen_cardTodaySteps_title}</ContentText>
 						<BoldPrimaryText style={{color: this.props.primaryContentColour, fontSize: Dimens.cardBigTextSizeValue}}>{this.state.todayStepCount}</BoldPrimaryText>
-						<ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.explanationColour}}>{Strings.stepsScreen_cardTodaySteps_goalHeader + this.props.goal + Strings.cardSteps_goalUnit}</ExplanationText>
+						<ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.explanationColour}}>{Strings.stepsScreen_cardTodaySteps_goalHeader + this.props.goal + Strings.stepUnit}</ExplanationText>
 					</CardColumnContainer>
                 );
         } // end switch-case

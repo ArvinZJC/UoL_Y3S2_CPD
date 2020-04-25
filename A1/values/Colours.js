@@ -4,7 +4,7 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 11:19:50
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 00:52:02
+ * @LastEditTime: 2020-04-25 01:53:35
  */
 
 export default
@@ -17,9 +17,8 @@ export default
     defaultCardBackground: '#F6F8FA',
     errorAlertBackground: '#ff6666',
     explanationText: '#999999',
-    headerRightButtonBackground_pressed: '#E5E5EA',
+    itemBackground_pressed: '#E5E5EA',
     primaryText: '#333333',
-    settingBackground_pressed: '#E5E5EA',
     settingsSectionHeader: '#2196F3',
     splashBackground: '#ff5050',
     stepsCardBackground: '#ff4d00',

@@ -1,10 +1,10 @@
 /*
  * @Description: the entry file of the app
- * @Version: 1.0.3.20200424
+ * @Version: 1.0.4.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-03-31 13:44:57
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-24 22:56:02
+ * @LastEditTime: 2020-04-25 16:42:59
  */
 
 import 'react-native-gesture-handler'; /* follow the official guides to add it at the top to avoid any crashes in production */
@@ -14,10 +14,13 @@ import {Platform} from 'react-native';
 import {AppearanceProvider, useColorScheme} from 'react-native-appearance';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {Ionicons} from '@expo/vector-icons';
+import * as eva from '@eva-design/eva';
+import {ApplicationProvider, IconRegistry, Icon} from '@ui-kitten/components';
+import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
+import AboutScreen from './screens/AboutScreen';
 import StepsScreen from './screens/StepsScreen';
 import WeightScreen from './screens/WeightScreen';
 
@@ -30,6 +33,7 @@ const Stack = createStackNavigator();
 
 const HomeScreen_route = 'Home';
 const SettingsScreen_route = 'Settings';
+const AboutScreen_route = 'About';
 const StepsScreen_route = 'Steps';
 const WeightScreen_route = 'Weight';
 
@@ -52,8 +56,11 @@ function SettingsButton()
 	`;
 
 	return(
-		<SettingsButtonArea onPress={() => {navigation.navigate(SettingsScreen_route)}} underlayColor={colours.headerRightButtonBackground_pressed}>
-			<Ionicons name='md-settings' size={HeaderRightButton_iconSize} color={colours.primaryText} />
+		<SettingsButtonArea onPress={() => {navigation.navigate(SettingsScreen_route)}} underlayColor={colours.itemBackground_pressed}>
+			<Icon
+				style={{width: HeaderRightButton_iconSize, height: HeaderRightButton_iconSize}}
+				fill={colours.primaryText}
+				name='settings-2-outline' />
 		</SettingsButtonArea>
 	);
 }
@@ -64,54 +71,66 @@ export default function App()
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
 	
 	return(
-		<AppearanceProvider>
-			<NavigationContainer>
-				<Stack.Navigator
-					initialRouteName={HomeScreen_route}
-					headerMode={Platform.OS === 'android' ? 'screen' : 'float'}
-					screenOptions={{
-						headerStyle: {
-							backgroundColor: colours.appTheme,
-							borderBottomWidth: 0,
-							elevation: 0,
-							shadowColor: colours.appTheme
-						},
-						headerTintColor: (Platform.OS === 'android' ? colours.primaryText : colours.splashBackground),
-						headerTitleStyle: {
-							color: colours.primaryText
-						},
-						headerTitleAlign: 'center',
-						...TransitionPresets.SlideFromRightIOS}}>
-					<Stack.Screen
-						name={HomeScreen_route}
-						component={HomeScreen}
-						options={{
-							title: Strings.appName,
-							headerRight: () => (<SettingsButton />)
-						}} />
-					<Stack.Screen
-						name={SettingsScreen_route}
-						component={SettingsScreen}
-						options={{
-							title: Strings.settingsScreen_title,
-							headerBackTitle: Strings.homeScreen_label
-						}} />
-					<Stack.Screen
-						name={StepsScreen_route}
-						component={StepsScreen}
-						options={{
-							title: Strings.stepsScreen_title,
-							headerBackTitle: Strings.homeScreen_label
-						}} />
-					<Stack.Screen
-						name={WeightScreen_route}
-						component={WeightScreen}
-						options={{
-							title: Strings.weightScreen_title,
-							headerBackTitle: Strings.homeScreen_label
-						}} />
-				</Stack.Navigator>
-			</NavigationContainer>
-		</AppearanceProvider>
+		<>
+			<IconRegistry icons={EvaIconsPack} />
+			<ApplicationProvider {...eva} theme={colourScheme === 'light' ? eva.light : eva.dark}>
+				<AppearanceProvider>
+					<NavigationContainer>
+						<Stack.Navigator
+							initialRouteName={HomeScreen_route}
+							headerMode={Platform.OS === 'android' ? 'screen' : 'float'}
+							screenOptions={{
+								headerStyle: {
+									backgroundColor: colours.appTheme,
+									borderBottomWidth: 0,
+									elevation: 0,
+									shadowColor: colours.appTheme
+								},
+								headerTintColor: (Platform.OS === 'android' ? colours.primaryText : colours.splashBackground),
+								headerTitleStyle: {
+									color: colours.primaryText
+								},
+								headerTitleAlign: 'center',
+								...TransitionPresets.SlideFromRightIOS}}>
+							<Stack.Screen
+								name={HomeScreen_route}
+								component={HomeScreen}
+								options={{
+									title: Strings.appName,
+									headerRight: () => (<SettingsButton />)
+								}} />
+							<Stack.Screen
+								name={SettingsScreen_route}
+								component={SettingsScreen}
+								options={{
+									title: Strings.settingsScreen_title,
+									headerBackTitle: Strings.homeScreen_label
+								}} />
+							<Stack.Screen
+								name={AboutScreen_route}
+								component={AboutScreen}
+								options={{
+									title: Strings.aboutScreen_title_start + Strings.appName,
+									headerBackTitle: Strings.settingsScreen_title
+								}} />
+							<Stack.Screen
+								name={StepsScreen_route}
+								component={StepsScreen}
+								options={{
+									title: Strings.stepsScreen_title,
+									headerBackTitle: Strings.homeScreen_label
+								}} />
+							<Stack.Screen
+								name={WeightScreen_route}
+								component={WeightScreen}
+								options={{
+									title: Strings.weightScreen_title,
+									headerBackTitle: Strings.homeScreen_label
+								}} />
+						</Stack.Navigator>
+					</NavigationContainer>
+				</AppearanceProvider>
+			</ApplicationProvider>
+		</>
 	);
 }

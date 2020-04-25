@@ -1,10 +1,10 @@
 /*
  * @Description: a default dimension dictionary
- * @Version: 1.0.3.20200424
+ * @Version: 1.0.4.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 11:50:35
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-24 23:11:02
+ * @LastEditTime: 2020-04-25 19:07:02
  */
 
 export default
@@ -24,10 +24,15 @@ export default
     chartMaxSegments: 4,
     contentTextSize: '16px',
     explanationTextSize: '14px',
-    logoSideLengthValue: 150,
+    longPickerWidth: 125,
+    logoSideLength: 150,
     margin: '25px',
     marginValue: 25,
+    mediumInterval: '10px',
+    mediumIntervalValue: 10,
+    mediumPickerWidth: 120,
     padding: '15px',
     paddingValue: 15,
-    primaryTextSize: '18px'
+    primaryTextSize: '18px',
+    shortPickerWidth: 100
 }

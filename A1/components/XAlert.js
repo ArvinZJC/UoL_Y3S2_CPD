@@ -1,10 +1,10 @@
 /*
  * @Description: an alert component
- * @Version: 1.0.1.20200424
+ * @Version: 1.0.2.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 19:42:13
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-24 12:33:45
+ * @LastEditTime: 2020-04-25 02:00:15
  */
 
 import React from 'react';
@@ -14,9 +14,9 @@ import Dimens from '../values/Dimens';
 import {ContentText} from '../values/Styles';
 
 
-export default function Alert(props)
+export default function XAlert(props)
 {
-    const AlertContainer = styled.View`
+    const MessageContainer = styled.View`
         border-top-width: 0.5px;
         border-bottom-width: 0.5px;
         border-color: ${props.borderColour};
@@ -27,10 +27,10 @@ export default function Alert(props)
         padding-right: ${Dimens.margin};
     `;
     return(
-        <AlertContainer>
+        <MessageContainer>
             <ContentText style={{color: props.textColour}}>
                 {props.message}
             </ContentText>
-        </AlertContainer>
+        </MessageContainer>
     );
 }
