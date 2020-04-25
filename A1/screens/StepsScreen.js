@@ -1,10 +1,10 @@
 /*
  * @Description: the steps screen
- * @Version: 1.0.2.20200424
+ * @Version: 1.0.3.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 15:15:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-24 22:30:55
+ * @LastEditTime: 2020-04-25 02:01:11
  */
 
 import React from 'react';
@@ -19,6 +19,7 @@ import {
 	MainContentArea,
 	Card,
 	CardContentArea} from '../values/Styles';
+
 import XPedometer from '../components/XPedometer';
 
 
