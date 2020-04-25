@@ -1,10 +1,10 @@
 /*
  * @Description: a pedometer component
- * @Version: 1.0.1.20200424
+ * @Version: 1.0.2.20200425
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-24 23:17:24
+ * @LastEditTime: 2020-04-25 01:48:58
  */
 
 import React from 'react';
@@ -249,7 +249,7 @@ export default class XPedometer extends React.Component
                     console.log('Failed to get the step count of 7 days ago. ' + error);
                 }
             );
-        }
+        } // end if
     };
 
     _unsubscribe = () =>
@@ -473,5 +473,5 @@ export default class XPedometer extends React.Component
 					</CardColumnContainer>
                 );
         } // end switch-case
-    }
+    };
 }
