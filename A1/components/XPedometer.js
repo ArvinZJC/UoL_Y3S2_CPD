@@ -1,10 +1,10 @@
 /*
  * @Description: a pedometer component
- * @Version: 1.0.6.20200427
+ * @Version: 1.0.7.20200427
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-27 03:26:04
+ * @LastEditTime: 2020-04-27 22:25:23
  */
 
 import React from 'react';
@@ -41,6 +41,7 @@ export default class XPedometer extends React.Component
         weightGoal: Strings.placeholder,
         isPedometerAvailable: null,
         pedometerError: null,
+        todayStepCount_temp: 0, // avoid the wrong synchronous update
         todayStepCount: 0,
         todayStepCountError: null,
         progress: 0,
@@ -62,6 +63,7 @@ export default class XPedometer extends React.Component
                 if (new Date().getHours() === 0 && new Date().getMinutes() === 0)
 				{
 					this.setState({
+                        todayStepCount_temp: 0,
                         todayStepCount: 0
                     });
 				} // end if
@@ -211,6 +213,7 @@ export default class XPedometer extends React.Component
                 } // end if...else
 
                 this.setState({
+                    todayStepCount_temp: result.steps,
                     todayStepCount: result.steps,
                     todayStepCountError: null,
                     progress: this.currentProgress
@@ -219,6 +222,7 @@ export default class XPedometer extends React.Component
             error =>
             {
                 this.setState({
+                    todayStepCount_temp: 0,
                     todayStepCount: 0,
                     todayStepCountError: error,
                     progress: 0
@@ -228,7 +232,7 @@ export default class XPedometer extends React.Component
         this._pedometerSubscription = Pedometer.watchStepCount(result =>
             {
                 this.setState({
-                    todayStepCount: this.state.todayStepCount + result.steps
+                    todayStepCount: this.state.todayStepCount_temp + result.steps
                 })
             });
 
