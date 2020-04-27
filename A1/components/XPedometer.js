@@ -1,21 +1,23 @@
 /*
  * @Description: a pedometer component
- * @Version: 1.0.2.20200425
+ * @Version: 1.0.6.20200427
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 16:44:55
+ * @LastEditTime: 2020-04-27 03:26:04
  */
 
 import React from 'react';
-import {Platform, Dimensions} from 'react-native';
+import {Platform, Dimensions, DeviceEventEmitter} from 'react-native';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {BarChart} from 'react-native-chart-kit';
-import styled from 'styled-components';
+import * as SecureStore from 'expo-secure-store';
 
 import Strings from '../values/Strings';
 import Dimens from '../values/Dimens';
+import Attributes from '../values/Attributes';
 import {
+    AlertArea,
     CardContentArea,
     CardRowContainer,
     CardColumnContainer,
@@ -27,15 +29,16 @@ import XAlert from './XAlert';
 
 
 const Pedometer = Platform.OS === 'ios' ? require('expo-sensors/build/Pedometer') : require('expo-legacy/build/Pedometer'); // from Expo 34.0.0, great changes have taken place in the pedometer implementation - it is incomplete and has some issues with Android (please refer to the issue: https://github.com/expo/expo/issues/4895)
-const alertContentTypeId = 'alert';
-const chartContentTypeId = 'chart';
-const contentWithProgressTypeId = 'with-progess';
 
 export default class XPedometer extends React.Component
 {
-    pedometerUnknownStatus = 'unknown';
-
     state = {
+        gender: Strings.placeholder,
+        birthday: Strings.placeholder,
+        height: Strings.placeholder,
+        weight: Strings.placeholder,
+        stepGoal: Strings.placeholder,
+        weightGoal: Strings.placeholder,
         isPedometerAvailable: null,
         pedometerError: null,
         todayStepCount: 0,
@@ -54,16 +57,112 @@ export default class XPedometer extends React.Component
     componentDidMount()
     {
         this._subscribe();
+        this.timer = setInterval(() =>
+            {
+                if (new Date().getHours() === 0 && new Date().getMinutes() === 0)
+				{
+					this.setState({
+                        todayStepCount: 0
+                    });
+				} // end if
+            }, 1000); // set a timer to track the current time to display 0 as today's steps as soon as possible when it is a new day
     }
 
     componentWillUnmount()
     {
         this._unsubscribe();
+        clearInterval(this.timer);
     }
+
+    getGenderSaved = () =>
+    {
+        SecureStore.getItemAsync(Attributes.preferenceGenderKey).then((indexSaved) =>
+            {
+                this.setState({
+                    gender: indexSaved === null ? null : JSON.parse(indexSaved)
+                });
+            }).catch((e) =>
+            {
+                console.log('Failed to get the gender preference data saved. ' + e);
+            });
+    };
+
+    getBirthdaySaved = () =>
+    {
+        SecureStore.getItemAsync(Attributes.preferenceBirthdayKey).then((dateSaved) =>
+            {
+                this.setState({
+                    birthday: dateSaved === null ? null : new Date(JSON.parse(dateSaved))
+                });
+            }).catch((e) =>
+            {
+                console.log('Failed to get the birthday preference data saved. ' + e);
+            });
+    };
+
+    getHeightSaved = () =>
+    {
+        SecureStore.getItemAsync(Attributes.preferenceHeightKey).then((indexSaved) =>
+            {
+                this.setState({
+                    height: indexSaved === null ? null : JSON.parse(indexSaved) + 10
+                });
+            }).catch((e) =>
+            {
+                console.log('Failed to get the height preference data saved. ' + e);
+            });
+    };
+
+    getWeightSaved = () =>
+    {
+        SecureStore.getItemAsync(Attributes.preferenceWeightKey).then((indexSaved) =>
+            {
+                this.setState({
+                    weight: indexSaved === null ? null : JSON.parse(indexSaved) + 10
+                });
+            }).catch((e) =>
+            {
+                console.log('Failed to get the weight preference data saved. ' + e);
+            });
+    };
+
+    getStepGoalSaved = () =>
+    {
+        SecureStore.getItemAsync(Attributes.preferenceStepGoalKey).then((indexSaved) =>
+            {
+                this.setState({
+                    stepGoal: indexSaved === null ? null : 1000 * (JSON.parse(indexSaved) + 1)
+                });
+            }).catch((e) =>
+            {
+                console.log('Failed to get the step goal preference data saved. ' + e);
+            });
+    };
+
+    getWeightGoalSaved = () =>
+    {
+        SecureStore.getItemAsync(Attributes.preferenceWeightGoalKey).then((indexSaved) =>
+            {
+                this.setState({
+                    weightGoal: indexSaved === null ? null : JSON.parse(indexSaved) + 10
+                });
+            }).catch((e) =>
+            {
+                console.log('Failed to get the weight goal preference data saved. ' + e);
+            });
+    };
 
     _subscribe = () =>
     {
-        this._subscription = Pedometer.watchStepCount();
+        this._backSubscription = DeviceEventEmitter.addListener(Attributes.backListenerKey, () =>
+            {
+                this.getGenderSaved();
+                this.getBirthdaySaved();
+                this.getHeightSaved();
+                this.getWeightSaved();
+                this.getStepGoalSaved();
+                this.getWeightGoalSaved();
+            });
 
         Pedometer.isAvailableAsync().then(result =>
             {
@@ -75,11 +174,17 @@ export default class XPedometer extends React.Component
             error =>
             {
                 this.setState({
-                    isPedometerAvailable: this.pedometerUnknownStatus,
+                    isPedometerAvailable: Attributes.pedometerUnknownStatus,
                     pedometerError: error
                 });
-            }
-        );
+            });
+
+        this.getGenderSaved();
+        this.getBirthdaySaved();
+        this.getHeightSaved();
+        this.getWeightSaved();
+        this.getStepGoalSaved();
+        this.getWeightGoalSaved();
 
         const end_today = new Date();
         const start_today = new Date();
@@ -89,14 +194,21 @@ export default class XPedometer extends React.Component
         // set the time range to today to get the step count
         Pedometer.getStepCountAsync(start_today, end_today).then(result =>
             {
-                if (result.steps > this.props.goal)
+                if (this.state.stepGoal === Strings.placeholder || this.state.stepGoal === null)
                 {
-                    this.currentProgress = 100;
+                    this.currentProgress = 0;
                 }
                 else
                 {
-                    this.currentProgress = parseInt(result.steps * 100 / this.props.goal);
-                }
+                    if (result.steps > this.state.stepGoal)
+                    {
+                        this.currentProgress = 100;
+                    }
+                    else
+                    {
+                        this.currentProgress = parseInt(result.steps * 100 / this.state.stepGoal);
+                    } // end if...else
+                } // end if...else
 
                 this.setState({
                     todayStepCount: result.steps,
@@ -111,11 +223,17 @@ export default class XPedometer extends React.Component
                     todayStepCountError: error,
                     progress: 0
                 });
-            }
-        );
+            });
         
+        this._pedometerSubscription = Pedometer.watchStepCount(result =>
+            {
+                this.setState({
+                    todayStepCount: this.state.todayStepCount + result.steps
+                })
+            });
+
         // get the past 7 days worth of step data for creating a bar chart
-        if (this.props.contentTypeId === chartContentTypeId)
+        if (this.props.contentTypeId === Attributes.chartContentTypeId)
         {
             const start_past1 = new Date();
             const start_past2 = new Date();
@@ -158,8 +276,7 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get yesterday\'s step count. ' + error);
-                }
-            );
+                });
             Pedometer.getStepCountAsync(start_past2, start_past1).then(result =>
                 {
                     this.setState({
@@ -173,8 +290,7 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get the step count of the day before yesterday. ' + error);
-                }
-            );
+                });
             Pedometer.getStepCountAsync(start_past3, start_past2).then(result =>
                 {
                     this.setState({
@@ -188,8 +304,7 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get the step count of 3 days ago. ' + error);
-                }
-            );
+                });
             Pedometer.getStepCountAsync(start_past4, start_past3).then(result =>
                 {
                     this.setState({
@@ -203,8 +318,7 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get the step count of 4 days ago. ' + error);
-                }
-            );
+                });
             Pedometer.getStepCountAsync(start_past5, start_past4).then(result =>
                 {
                     this.setState({
@@ -218,8 +332,7 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get the step count of 5 days ago. ' + error);
-                }
-            );
+                });
             Pedometer.getStepCountAsync(start_past6, start_past5).then(result =>
                 {
                     this.setState({
@@ -233,8 +346,7 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get the step count of 6 days ago. ' + error);
-                }
-            );
+                });
             Pedometer.getStepCountAsync(start_past7, start_past6).then(result =>
                 {
                     this.setState({
@@ -248,27 +360,43 @@ export default class XPedometer extends React.Component
                         hasPastDayStepCountError: true
                     });
                     console.log('Failed to get the step count of 7 days ago. ' + error);
-                }
-            );
+                });
         } // end if
     };
 
     _unsubscribe = () =>
     {
-        this._subscription && this._subscription.remove();
-        this._subscription = null;
+        this._backSubscription && this._backSubscription.remove();
+        this._backSubscription = null;
+        
+        this._pedometerSubscription && this._pedometerSubscription.remove();
+        this._pedometerSubscription = null;
     };
 
     render()
     {
-        const AlertArea = styled.View`
-            width: 100%;
-            margin-bottom: 10px;
-        `;
-
         switch (this.props.contentTypeId)
         {
-            case alertContentTypeId:
+            case Attributes.alertContentTypeId:
+                if (this.state.gender === Strings.placeholder
+                    || this.state.gender === null
+                    || this.state.birthday === Strings.placeholder
+                    || this.state.birthday === null
+                    || this.state.height === Strings.placeholder
+                    || this.state.height === null
+                    || this.state.weight === Strings.placeholder
+                    || this.state.weight === null
+                    || this.state.stepGoal === Strings.placeholder
+                    || this.state.stepGoal === null
+                    || this.state.weightGoal === Strings.placeholder
+                    || this.state.weightGoal == null)
+                {
+                    this.warningMessageImportantInfo = Strings.alert_lackOfImportantInfo;
+                }
+                else
+                {
+                    this.warningMessageImportantInfo = null;
+                } // end if...else
                 switch (this.state.isPedometerAvailable)
                 {
                     case String(true):
@@ -276,61 +404,170 @@ export default class XPedometer extends React.Component
                         {
                             if (this.state.todayStepCountError === null)
                             {
-                                return(
-                                    <AlertArea>
-                                        <XAlert
-                                            backgroundColour={this.props.errorAlertBackgroundColour}
-                                            borderColour={this.props.borderColour}
-                                            textColour={this.props.textColour}
-                                            message={Strings.alertSteps_hasPastDayStepCountError} />
-                                    </AlertArea>
-                                );
+                                if (this.warningMessageImportantInfo === null)
+                                {
+                                    return(
+                                        <AlertArea>
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_hasPastDayStepCountError} />
+                                        </AlertArea>
+                                    );
+                                }
+                                else
+                                {
+                                    return(
+                                        <AlertArea>
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_hasPastDayStepCountError} />
+                                            <XAlert
+                                                backgroundColour={this.props.warningBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={this.warningMessageImportantInfo} />
+                                        </AlertArea>
+                                    );
+                                } // end if...else
                             }
                             else
                             {
                                 console.log('Failed to get today\'s step count. ' + this.state.todayStepCountError);
-                                return(
-                                    <AlertArea>
-                                        <XAlert
-                                            backgroundColour={this.props.alertBackgroundColour}
-                                            borderColour={this.props.borderColour}
-                                            textColour={this.props.textColour}
-                                            message={Strings.alertSteps_hasPastDayStepCountError} />
-                                        <XAlert
-                                            backgroundColour={this.props.alertBackgroundColour}
-                                            borderColour={this.props.borderColour}
-                                            textColour={this.props.textColour}
-                                            message={Strings.alertSteps_todayStepCountUnavailable} />
-                                    </AlertArea>
-                                );
+
+                                if (this.warningMessageImportantInfo === null)
+                                {
+                                    return(
+                                        <AlertArea>
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_hasPastDayStepCountError} />
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_todayStepCountUnavailable} />
+                                        </AlertArea>
+                                    );
+                                }
+                                else
+                                {
+                                    return(
+                                        <AlertArea>
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_hasPastDayStepCountError} />
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_todayStepCountUnavailable} />
+                                            <XAlert
+                                                backgroundColour={this.props.warningBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={this.warningMessageImportantInfo} />
+                                        </AlertArea>
+                                    );
+                                } // end if...else
                             } // end if...else
                         }
                         else
                         {
                             if (this.state.todayStepCountError === null)
                             {
-                                if (this.state.todayStepCount === this.props.goal)
+                                if (this.state.todayStepCount === this.state.stepGoal)
+                                {
+                                    if (this.warningMessageImportantInfo === null)
+                                    {
+                                        return(
+                                            <AlertArea>
+                                                <XAlert
+                                                    backgroundColour={this.props.successBackgroundColour}
+                                                    borderColour={this.props.borderColour}
+                                                    textColour={this.props.textColour}
+                                                    message={Strings.alertSteps_goalAchieved} />
+                                            </AlertArea>
+                                        );
+                                    }
+                                    else
+                                    {
+                                        return(
+                                            <AlertArea>
+                                                <XAlert
+                                                    backgroundColour={this.props.successBackgroundColour}
+                                                    borderColour={this.props.borderColour}
+                                                    textColour={this.props.textColour}
+                                                    message={Strings.alertSteps_goalAchieved} />
+                                                <XAlert
+                                                    backgroundColour={this.props.warningBackgroundColour}
+                                                    borderColour={this.props.borderColour}
+                                                    textColour={this.props.textColour}
+                                                    message={this.warningMessageImportantInfo} />
+                                            </AlertArea>
+                                        );
+                                    } // end if...else
+                                }
+                                else
+                                {
+                                    if (this.warningMessageImportantInfo === null)
+                                    {
+                                        return null;
+                                    }
+                                    else
+                                    {
+                                        return(
+                                            <AlertArea>
+                                                <XAlert
+                                                    backgroundColour={this.props.warningBackgroundColour}
+                                                    borderColour={this.props.borderColour}
+                                                    textColour={this.props.textColour}
+                                                    message={this.warningMessageImportantInfo} />
+                                            </AlertArea>
+                                        );
+                                    } // end if...else
+                                } // end if...else
+                            }
+                            else
+                            {
+                                console.log('Failed to get today\'s step count. ' + this.state.todayStepCountError);
+
+                                if (this.warningMessageImportantInfo === null)
                                 {
                                     return(
                                         <AlertArea>
                                             <XAlert
-                                                backgroundColour={this.props.successBackgroundColour}
+                                                backgroundColour={this.props.errorBackgroundColour}
                                                 borderColour={this.props.borderColour}
                                                 textColour={this.props.textColour}
-                                                message={Strings.alertSteps_goalAchieved} />
+                                                message={Strings.alertSteps_todayStepCountUnavailable} />
                                         </AlertArea>
                                     );
                                 }
                                 else
                                 {
-                                    return null;
+                                    return(
+                                        <AlertArea>
+                                            <XAlert
+                                                backgroundColour={this.props.errorBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={Strings.alertSteps_todayStepCountUnavailable} />
+                                            <XAlert
+                                                backgroundColour={this.props.warningBackgroundColour}
+                                                borderColour={this.props.borderColour}
+                                                textColour={this.props.textColour}
+                                                message={this.warningMessageImportantInfo} />
+                                        </AlertArea>
+                                    );
                                 } // end if...else
-                            }
-                            else
-                            {
-                                this.message = Strings.alertSteps_todayStepCountUnavailable;
-                                console.log('Failed to get today\'s step count. ' + this.state.todayStepCountError);
-                                break;
                             } // end if...else
                         } // end if...else
                         
@@ -338,80 +575,123 @@ export default class XPedometer extends React.Component
                         this.message = Strings.alertSteps_unavailablePedometer;
                         break;
 
-                    case this.pedometerUnknownStatus:
+                    case Attributes.pedometerUnknownStatus:
                         this.message = Strings.alertSteps_pedometerError;
                         console.log('Failed to get the status of the pedometer. ' + this.state.pedometerError);
                         break;
                     
                     case null:
-                        return null;
+                        if (this.warningMessageImportantInfo === null)
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return(
+                                <AlertArea>
+                                    <XAlert
+                                        backgroundColour={this.props.warningBackgroundColour}
+                                        borderColour={this.props.borderColour}
+                                        textColour={this.props.textColour}
+                                        message={this.warningMessageImportantInfo} />
+                                </AlertArea>
+                            );
+                        } // end if...else
                 } // end switch-case
-                return(
-                    <AlertArea>
-                        <XAlert
-                            backgroundColour={this.props.alertBackgroundColour}
-                            borderColour={this.props.borderColour}
-                            textColour={this.props.textColour}
-                            message={this.message} />
-                    </AlertArea>
-                );
-            
-            case chartContentTypeId:
-                if (this.state.isPedometerAvailable === null)
+                if (this.warningMessageImportantInfo === null)
                 {
-                    return null;
+                    return(
+                        <AlertArea>
+                            <XAlert
+                                backgroundColour={this.props.errorBackgroundColour}
+                                borderColour={this.props.borderColour}
+                                textColour={this.props.textColour}
+                                message={this.message} />
+                        </AlertArea>
+                    );
                 }
                 else
                 {
-                    const start_today = new Date();
-
-                    start_today.setHours(0, 0, 0, 0);
-
-                    const start_past1 = new Date();
-                    const start_past2 = new Date();
-                    const start_past3 = new Date();
-                    const start_past4 = new Date();
-                    const start_past5 = new Date();
-                    const start_past6 = new Date();
-                    const start_past7 = new Date();
-
-                    start_past1.setHours(0, 0, 0, 0);
-                    start_past2.setHours(0, 0, 0, 0);
-                    start_past3.setHours(0, 0, 0, 0);
-                    start_past4.setHours(0, 0, 0, 0);
-                    start_past5.setHours(0, 0, 0, 0);
-                    start_past6.setHours(0, 0, 0, 0);
-                    start_past7.setHours(0, 0, 0, 0);
-                    
-                    start_past1.setDate(start_today.getDate() - 1);
-                    start_past2.setDate(start_past1.getDate() - 1);
-                    start_past3.setDate(start_past2.getDate() - 1);
-                    start_past4.setDate(start_past3.getDate() - 1);
-                    start_past5.setDate(start_past4.getDate() - 1);
-                    start_past6.setDate(start_past5.getDate() - 1);
-                    start_past7.setDate(start_past6.getDate() - 1);
-
-                    const data = {
-                        labels: [
-                            start_past7.getDate() + '/' + (start_past7.getMonth() + 1),
-                            start_past6.getDate() + '/' + (start_past6.getMonth() + 1),
-                            start_past5.getDate() + '/' + (start_past5.getMonth() + 1),
-                            start_past4.getDate() + '/' + (start_past4.getMonth() + 1),
-                            start_past3.getDate() + '/' + (start_past3.getMonth() + 1),
-                            start_past2.getDate() + '/' + (start_past2.getMonth() + 1),
-                            start_past1.getDate() + '/' + (start_past1.getMonth() + 1)],
-                        datasets: [{
-                            data: [
-                                this.state.pastDayStepCount_7,
-                                this.state.pastDayStepCount_6,
-                                this.state.pastDayStepCount_5,
-                                this.state.pastDayStepCount_4,
-                                this.state.pastDayStepCount_3,
-                                this.state.pastDayStepCount_2,
-                                this.state.pastDayStepCount_1]
+                    return(
+                        <AlertArea>
+                            <XAlert
+                                backgroundColour={this.props.errorBackgroundColour}
+                                borderColour={this.props.borderColour}
+                                textColour={this.props.textColour}
+                                message={this.message} />
+                            <XAlert
+                                backgroundColour={this.props.warningBackgroundColour}
+                                borderColour={this.props.borderColour}
+                                textColour={this.props.textColour}
+                                message={this.warningMessageImportantInfo} />
+                        </AlertArea>
+                    );
+                } // end if...else
+            
+            case Attributes.chartContentTypeId:
+                const start_today = new Date();
+                start_today.setHours(0, 0, 0, 0);
+                const start_past1 = new Date();
+                const start_past2 = new Date();
+                const start_past3 = new Date();
+                const start_past4 = new Date();
+                const start_past5 = new Date();
+                const start_past6 = new Date();
+                const start_past7 = new Date();
+                start_past1.setHours(0, 0, 0, 0);
+                start_past2.setHours(0, 0, 0, 0);
+                start_past3.setHours(0, 0, 0, 0);
+                start_past4.setHours(0, 0, 0, 0);
+                start_past5.setHours(0, 0, 0, 0);
+                start_past6.setHours(0, 0, 0, 0);
+                start_past7.setHours(0, 0, 0, 0);
+                start_past1.setDate(start_today.getDate() - 1);
+                start_past2.setDate(start_past1.getDate() - 1);
+                start_past3.setDate(start_past2.getDate() - 1);
+                start_past4.setDate(start_past3.getDate() - 1);
+                start_past5.setDate(start_past4.getDate() - 1);
+                start_past6.setDate(start_past5.getDate() - 1);
+                start_past7.setDate(start_past6.getDate() - 1);
+                const data = {
+                    labels: [
+                        start_past7.getDate() + '/' + (start_past7.getMonth() + 1),
+                        start_past6.getDate() + '/' + (start_past6.getMonth() + 1),
+                        start_past5.getDate() + '/' + (start_past5.getMonth() + 1),
+                        start_past4.getDate() + '/' + (start_past4.getMonth() + 1),
+                        start_past3.getDate() + '/' + (start_past3.getMonth() + 1),
+                        start_past2.getDate() + '/' + (start_past2.getMonth() + 1),
+                        start_past1.getDate() + '/' + (start_past1.getMonth() + 1)],
+                    datasets: [{
+                        data: [
+                            this.state.pastDayStepCount_7,
+                            this.state.pastDayStepCount_6,
+                            this.state.pastDayStepCount_5,
+                            this.state.pastDayStepCount_4,
+                            this.state.pastDayStepCount_3,
+                            this.state.pastDayStepCount_2,
+                            this.state.pastDayStepCount_1]
                         }]
                     };
-                    const chartWidth = Dimensions.get('window').width - Dimens.marginValue * 2 - Dimens.paddingValue * 2;
+                const chartWidth = Dimensions.get('window').width - Dimens.marginValue * 2 - Dimens.paddingValue * 2;
+                if (this.state.isPedometerAvailable === null)
+                {
+                    return(
+                        <CardContentArea>
+                            <CardColumnContainer>
+                                <ContentText style={{color: this.props.chartTitleColour}}>{Strings.stepsScreen_cardPastDaysStepsChart_title}</ContentText>
+                                <BarChart
+                                    style={{margin: Dimens.paddingValue}}
+                                    data={data}
+                                    width={chartWidth}
+                                    height={Dimens.chartHeight}
+                                    segments={Dimens.chartMinSegments}
+                                    chartConfig={this.props.chartConfig} />
+                            </CardColumnContainer>
+                        </CardContentArea>
+                    );
+                }
+                else
+                {
                     const isFromZero = this.state.pastDayStepCount_1 === 0
                         && this.state.pastDayStepCount_2 === 0
                         && this.state.pastDayStepCount_3 === 0
@@ -444,17 +724,17 @@ export default class XPedometer extends React.Component
                     );
                 } // end if...else
             
-            case contentWithProgressTypeId:
+            case Attributes.contentWithProgressTypeId:
                 return(
                     <CardRowContainer style={{justifyContent: 'space-between'}}>
                         <CardRowContainer style={{alignItems: 'flex-end'}}>
                             <BoldPrimaryText style={{
-                                marginBottom: 9,
+                                marginBottom: 8,
                                 color: this.props.textColour,
                                 fontSize: Dimens.cardBigTextSizeValue}}>
                                 {this.state.todayStepCount}
                             </BoldPrimaryText>
-                            <ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.textColour}}>/{this.props.goal + Strings.stepUnit}</ExplanationText>
+                            <ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.textColour}}>/{(this.state.stepGoal === null ? Strings.placeholder : this.state.stepGoal) + Strings.stepUnit}</ExplanationText>
                         </CardRowContainer>
                         <CardRowContainer style={{alignItems: 'flex-end'}}>
                             <AnimatedCircularProgress
@@ -476,12 +756,61 @@ export default class XPedometer extends React.Component
                     </CardRowContainer>
                 );
             
+            case Attributes.extraStepInfoContentTypeId:
+                var distance = Strings.placeholder;
+                var calories = Strings.placeholder;
+                if (this.state.height !== Strings.placeholder && this.state.height !== null)
+                {
+                    distance = this.state.todayStepCount * this.state.height * Attributes.strideLengthCoefficient / 100000; // unit: km
+
+                    if (this.state.weight !== Strings.placeholder && this.state.weight !== null)
+                    {
+                        calories = this.state.weight * distance * Attributes.walkCaloriesCoefficient; // unit: kcal
+                        calories = calories.toFixed(2); // keep 2 decimal places
+                    } // end if
+
+                    distance = distance.toFixed(2); // keep 2 decimal places
+                } // end if
+                return(
+                    <CardColumnContainer>
+                        <CardRowContainer style={{width: '100%', justifyContent: 'space-around'}}>
+                            <CardColumnContainer>
+                                <CardRowContainer style={{marginBottom: Dimens.smallIntervalValue, alignItems: 'flex-end'}}>
+                                    <BoldPrimaryText style={{color: this.props.primaryContentColour, fontSize: Dimens.cardMediumTextSizeValue}}>{distance}</BoldPrimaryText>
+                                    <ExplanationText style={{marginBottom: 3, color: this.props.explanationColour}}>{Strings.stepsScreen_cardExtraStepInfo_distanceUnit}</ExplanationText>
+                                </CardRowContainer>
+                                <ContentText style={{marginBottom: Dimens.smallIntervalValue, color: this.props.titleColour}}>{Strings.stepsScreen_cardExtraStepInfo_distanceTitle}</ContentText>
+                            </CardColumnContainer>
+                            <CardColumnContainer>
+                                <CardRowContainer style={{marginBottom: Dimens.smallIntervalValue, alignItems: 'flex-end'}}>
+                                    <BoldPrimaryText style={{color: this.props.primaryContentColour, fontSize: Dimens.cardMediumTextSizeValue}}>{calories}</BoldPrimaryText>
+                                    <ExplanationText style={{marginBottom: 3, color: this.props.explanationColour}}>{Strings.stepsScreen_cardExtraStepInfo_caloriesUnit}</ExplanationText>
+                                </CardRowContainer>
+                                <ContentText style={{marginBottom: Dimens.smallIntervalValue, color: this.props.titleColour}}>{Strings.stepsScreen_cardExtraStepInfo_caloriesTitle}</ContentText>
+                            </CardColumnContainer>
+                        </CardRowContainer>
+                        <ExplanationText style={{
+                            marginBottom: Dimens.paddingValue,
+                            color: this.props.explanationColour,
+                            fontStyle: 'italic',
+                            textAlign: 'center'}}>{Strings.stepsScreen_cardExtraStepInfo_instructions}</ExplanationText>
+                    </CardColumnContainer>
+                );
+            
             default:
                 return(
                     <CardColumnContainer>
-						<ContentText style={{color: this.props.titleColour}}>{Strings.stepsScreen_cardTodaySteps_title}</ContentText>
-						<BoldPrimaryText style={{color: this.props.primaryContentColour, fontSize: Dimens.cardBigTextSizeValue}}>{this.state.todayStepCount}</BoldPrimaryText>
-						<ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.explanationColour}}>{Strings.stepsScreen_cardTodaySteps_goalHeader + this.props.goal + Strings.stepUnit}</ExplanationText>
+						<ContentText style={{marginBottom: Dimens.smallIntervalValue, color: this.props.titleColour}}>{Strings.stepsScreen_cardTodaySteps_title}</ContentText>
+                        <BoldPrimaryText style={{
+                            marginBottom: Dimens.smallIntervalValue,
+                            color: this.props.primaryContentColour,
+                            fontSize: Dimens.cardBigTextSizeValue}}>{this.state.todayStepCount}</BoldPrimaryText>
+						<ExplanationText style={{marginBottom: Dimens.smallIntervalValue, color: this.props.explanationColour}}>{Strings.goalHeader + (this.state.stepGoal === null ? Strings.placeholder : this.state.stepGoal) + Strings.stepUnit}</ExplanationText>
+                        <ExplanationText style={{
+                            marginBottom: Dimens.paddingValue,
+                            color: this.props.explanationColour,
+                            fontStyle: 'italic',
+                            textAlign: 'center'}}>{Strings.stepsScreen_cardTodaySteps_tips}</ExplanationText>
 					</CardColumnContainer>
                 );
         } // end switch-case

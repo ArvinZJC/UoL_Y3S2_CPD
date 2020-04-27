@@ -1,10 +1,10 @@
 /*
  * @Description: the home screen
- * @Version: 1.0.5.20200425
+ * @Version: 1.0.6.20200426
  * @Author: Jichen Zhao
  * @Date: 2020-04-01 23:10:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 16:44:27
+ * @LastEditTime: 2020-04-26 22:26:46
  */
 
 import React from 'react';
@@ -16,6 +16,7 @@ import Colours_default from '../values/Colours';
 import Colours_night from '../values/Colours_night';
 import Strings from '../values/Strings';
 import Dimens from '../values/Dimens';
+import Attributes from '../values/Attributes';
 import {
 	RootLayout,
 	MainContentArea,
@@ -26,30 +27,25 @@ import {
 	BoldPrimaryText} from '../values/Styles';
 
 import XPedometer from '../components/XPedometer';
+import XWeight from '../components/XWeight';
 
-
-const StepsScreen_route = 'Steps';
-const WeightScreen_route = 'Weight';
 
 export default function HomeScreen()
 {
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
-	const alertContentTypeId = 'alert';
-	const contentWithProgressTypeId = 'with-progess';
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
 			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
 			<XPedometer
-				contentTypeId={alertContentTypeId}
-				alertBackgroundColour={colours.errorAlertBackground}
-				warningBackgroundColour={colours.warningAlertBackground}
-				successBackgroundColour={colours.successAlertBackground}
+				contentTypeId={Attributes.alertContentTypeId}
+				errorBackgroundColour={colours.errorBackground}
+				warningBackgroundColour={colours.warningBackground}
+				successBackgroundColour={colours.successBackground}
 				borderColour={colours.appTheme}
-				textColour={colours.cardPrimaryText}
-				goal={10000} />
+				textColour={colours.cardPrimaryText} />
 			<MainContentArea>
 				<ImageArea>
 					<Card style={{
@@ -64,26 +60,36 @@ export default function HomeScreen()
 								borderRadius: Dimens.cardBorderRadiusValue}} />
 					</Card>
 				</ImageArea>
-				<Card style={{backgroundColor: colours.stepsCardBackground, shadowColor: colours.cardShadowColour}}>
-					<CardTouchArea onPress={() => navigation.navigate(StepsScreen_route)} underlayColor={colours.stepsCardBackground_pressed}>
+				<Card style={{backgroundColor: colours.cardStepsBackground, shadowColor: colours.cardShadowColour}}>
+					<CardTouchArea onPress={() => navigation.navigate(Attributes.stepsScreenRoute)} underlayColor={colours.cardStepsBackground_pressed}>
 						<CardContentArea>
 							<BoldPrimaryText style={{color: colours.cardPrimaryText}}>{Strings.stepsScreen_title}</BoldPrimaryText>
 							<XPedometer
-								contentTypeId={contentWithProgressTypeId}
+								contentTypeId={Attributes.contentWithProgressTypeId}
 								textColour={colours.cardPrimaryText}
-								circularProgressBackgroundColour={colours.circleProgressBackground}
-								goal={10000} />
+								circularProgressBackgroundColour={colours.translucentBackground} />
 						</CardContentArea>
 					</CardTouchArea>
 				</Card>
-				<Card style={{backgroundColor: colours.stepsWeightBackground, shadowColor: colours.cardShadowColour, marginBottom: 30}}>
-					<CardTouchArea onPress={() => navigation.navigate(WeightScreen_route)} underlayColor={colours.stepsWeightBackground_pressed}>
+				<Card style={{
+					backgroundColor: colours.cardWeightBackground,
+					shadowColor: colours.cardShadowColour,
+					marginBottom: Dimens.lastItemBottomMarginValue}}>
+					<CardTouchArea onPress={() => navigation.navigate(Attributes.weightScreenRoute)} underlayColor={colours.cardWeightBackground_pressed}>
 						<CardContentArea>
 							<BoldPrimaryText style={{color: colours.cardPrimaryText}}>{Strings.weightScreen_title}</BoldPrimaryText>
+							<XWeight
+								contentTypeId={Attributes.contentWithBadgeTypeId}
+								errorBackgroundColour={colours.errorBackground}
+								warningBackgroundColour={colours.warningBackground}
+								successBackgroundColour={colours.successBackground}
+								unknownBackgroundColour={colours.defaultBadgeBackground}
+								textColour={colours.cardPrimaryText}
+								badgeShadowColour={colours.cardShadowColour} />
 						</CardContentArea>
 					</CardTouchArea>
 				</Card>
 			</MainContentArea>
 		</RootLayout>
-	); // TODO: step goal
+	);
 }

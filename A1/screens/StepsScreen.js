@@ -1,10 +1,10 @@
 /*
  * @Description: the steps screen
- * @Version: 1.0.3.20200425
+ * @Version: 1.0.4.20200426
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 15:15:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 03:54:18
+ * @LastEditTime: 2020-04-26 17:01:29
  */
 
 import React from 'react';
@@ -14,6 +14,7 @@ import {useColorScheme} from 'react-native-appearance';
 import Colours_default from '../values/Colours';
 import Colours_night from '../values/Colours_night';
 import Dimens from '../values/Dimens';
+import Attributes from '../values/Attributes';
 import {
 	RootLayout,
 	MainContentArea,
@@ -27,17 +28,15 @@ export default function StepsScreen()
 {
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
-	const alertContentTypeId = 'alert';
-	const chartContentTypeId = 'chart';
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
 			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
 			<XPedometer
-				contentTypeId={alertContentTypeId}
-				alertBackgroundColour={colours.errorAlertBackground}
-				warningBackgroundColour={colours.warningAlertBackground}
-				successBackgroundColour={colours.successAlertBackground}
+				contentTypeId={Attributes.alertContentTypeId}
+				errorBackgroundColour={colours.errorBackground}
+				warningBackgroundColour={colours.warningBackground}
+				successBackgroundColour={colours.successBackground}
 				borderColour={colours.appTheme}
 				textColour={colours.cardPrimaryText}
 				goal={10000} />
@@ -47,7 +46,7 @@ export default function StepsScreen()
 					backgroundColor: colours.defaultCardBackground,
 					shadowColor: colours.cardShadowColour}}>
 					<XPedometer
-						contentTypeId={chartContentTypeId}
+						contentTypeId={Attributes.chartContentTypeId}
 						chartTitleColour={colours.contentText}
 						chartConfig={{
 							backgroundGradientFrom: colours.defaultCardBackground,
@@ -56,19 +55,27 @@ export default function StepsScreen()
 							barPercentage: Dimens.barPercentage
 						}} />
 				</Card>
-				<Card style={{
-					backgroundColor: colours.defaultCardBackground,
-					shadowColor: colours.cardShadowColour,
-					marginBottom: 30}}>
+				<Card style={{backgroundColor: colours.defaultCardBackground, shadowColor: colours.cardShadowColour}}>
 					<CardContentArea>
 						<XPedometer
 							titleColour={colours.contentText}
 							primaryContentColour={colours.primaryText}
-							explanationColour={colours.explanationText}
-							goal={10000} />
+							explanationColour={colours.explanationText} />
+					</CardContentArea>
+				</Card>
+				<Card style={{
+					backgroundColor: colours.defaultCardBackground,
+					shadowColor: colours.cardShadowColour,
+					marginBottom: Dimens.lastItemBottomMarginValue}}>
+					<CardContentArea>
+						<XPedometer
+							contentTypeId={Attributes.extraStepInfoContentTypeId}
+							titleColour={colours.contentText}
+							primaryContentColour={colours.primaryText}
+							explanationColour={colours.explanationText} />
 					</CardContentArea>
 				</Card>
 			</MainContentArea>
 		</RootLayout>
-	); // TODO: step goal
+	);
 }

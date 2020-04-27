@@ -38,6 +38,6 @@
       "barStyle": "light-content",
       "backgroundColor": "#ff5050"
     },
-    "description": "(TODO: X Health description)"
+    "description": "X Health is an open-source health app. It can basically monitor your steps and weight. Some brief suggestions are also given based on your health data. The app is developed for academic study. It should never be used for any commercial purposes."
   }
 }

@@ -1,22 +1,24 @@
 /*
  * @Description: the entry file of the app
- * @Version: 1.0.4.20200425
+ * @Version: 1.0.6.20200427
  * @Author: Jichen Zhao
  * @Date: 2020-03-31 13:44:57
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 16:42:59
+ * @LastEditTime: 2020-04-27 03:25:15
  */
 
-import 'react-native-gesture-handler'; /* follow the official guides to add it at the top to avoid any crashes in production */
+import 'react-native-gesture-handler'; // follow the official guides to add it at the top to avoid any crashes in production
 import React from 'react';
 import styled from 'styled-components';
 import {Platform} from 'react-native';
 import {AppearanceProvider, useColorScheme} from 'react-native-appearance';
+import {} from '@react-navigation/native'
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry, Icon} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
+// import * as SecureStore from 'expo-secure-store'; // uncomment this when the preference data needs deleting during the development
 
 import HomeScreen from './screens/HomeScreen';
 import SettingsScreen from './screens/SettingsScreen';
@@ -27,38 +29,31 @@ import WeightScreen from './screens/WeightScreen';
 import Colours_default from './values/Colours';
 import Colours_night from './values/Colours_night';
 import Strings from './values/Strings';
+import Dimens from './values/Dimens';
+import Attributes from './values/Attributes';
 
 
 const Stack = createStackNavigator();
-
-const HomeScreen_route = 'Home';
-const SettingsScreen_route = 'Settings';
-const AboutScreen_route = 'About';
-const StepsScreen_route = 'Steps';
-const WeightScreen_route = 'Weight';
-
-const HeaderRightButton_iconSize = 22;
-const HeaderRightButton_marginRight = 10;
 
 function SettingsButton()
 {
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
-
+	
 	const SettingsButtonArea = styled.TouchableHighlight`
-		width: ${HeaderRightButton_iconSize * 2}px;
-		height: ${HeaderRightButton_iconSize * 2}px;
-		border-radius: ${HeaderRightButton_iconSize}px;
-		margin-right: ${HeaderRightButton_marginRight}px;
+		width: ${Dimens.toolbarRightButtonIconSize * 2}px;
+		height: ${Dimens.toolbarRightButtonIconSize * 2}px;
+		border-radius: ${Dimens.toolbarRightButtonIconSize}px;
+		margin-right: ${Dimens.mediumInterval};
 		align-items: center;
 		justify-content: center;
 	`;
 
 	return(
-		<SettingsButtonArea onPress={() => {navigation.navigate(SettingsScreen_route)}} underlayColor={colours.itemBackground_pressed}>
+		<SettingsButtonArea onPress={() => {navigation.navigate(Attributes.settingsScreenRoute)}} underlayColor={colours.itemBackground_pressed}>
 			<Icon
-				style={{width: HeaderRightButton_iconSize, height: HeaderRightButton_iconSize}}
+				style={{width: Dimens.toolbarRightButtonIconSize, height: Dimens.toolbarRightButtonIconSize}}
 				fill={colours.primaryText}
 				name='settings-2-outline' />
 		</SettingsButtonArea>
@@ -70,6 +65,16 @@ export default function App()
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
 	
+	console.disableYellowBox = true; // uncomment it when finishing implementation
+
+	// uncomment the specified lines to delete the specified preference data during the development
+	// SecureStore.deleteItemAsync(Attributes.preferenceGenderKey);
+	// SecureStore.deleteItemAsync(Attributes.preferenceBirthdayKey);
+	// SecureStore.deleteItemAsync(Attributes.preferenceHeightKey);
+	// SecureStore.deleteItemAsync(Attributes.preferenceWeightKey);
+	// SecureStore.deleteItemAsync(Attributes.preferenceStepGoalKey);
+	// SecureStore.deleteItemAsync(Attributes.preferenceWeightGoalKey);
+
 	return(
 		<>
 			<IconRegistry icons={EvaIconsPack} />
@@ -77,7 +82,7 @@ export default function App()
 				<AppearanceProvider>
 					<NavigationContainer>
 						<Stack.Navigator
-							initialRouteName={HomeScreen_route}
+							initialRouteName={Attributes.homeScreenRoute}
 							headerMode={Platform.OS === 'android' ? 'screen' : 'float'}
 							screenOptions={{
 								headerStyle: {
@@ -93,35 +98,34 @@ export default function App()
 								headerTitleAlign: 'center',
 								...TransitionPresets.SlideFromRightIOS}}>
 							<Stack.Screen
-								name={HomeScreen_route}
+								name={Attributes.homeScreenRoute}
 								component={HomeScreen}
 								options={{
 									title: Strings.appName,
 									headerRight: () => (<SettingsButton />)
 								}} />
 							<Stack.Screen
-								name={SettingsScreen_route}
+								name={Attributes.settingsScreenRoute}
 								component={SettingsScreen}
 								options={{
-									title: Strings.settingsScreen_title,
-									headerBackTitle: Strings.homeScreen_label
+									title: Strings.settingsScreen_title
 								}} />
 							<Stack.Screen
-								name={AboutScreen_route}
+								name={Attributes.aboutScreenRoute}
 								component={AboutScreen}
 								options={{
 									title: Strings.aboutScreen_title_start + Strings.appName,
 									headerBackTitle: Strings.settingsScreen_title
 								}} />
 							<Stack.Screen
-								name={StepsScreen_route}
+								name={Attributes.stepsScreenRoute}
 								component={StepsScreen}
 								options={{
 									title: Strings.stepsScreen_title,
 									headerBackTitle: Strings.homeScreen_label
 								}} />
 							<Stack.Screen
-								name={WeightScreen_route}
+								name={Attributes.weightScreenRoute}
 								component={WeightScreen}
 								options={{
 									title: Strings.weightScreen_title,
