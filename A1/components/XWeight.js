@@ -1,10 +1,10 @@
 /*
  * @Description: a weight component
- * @Version: 1.0.1.20200427
+ * @Version: 1.0.2.20200427
  * @Author: Jichen Zhao
  * @Date: 2020-04-26 18:24:14
  * @Last Editors: Jichen
- * @LastEditTime: 2020-04-27 02:07:55
+ * @LastEditTime: 2020-04-27 06:12:55
  */
 
 import React from 'react';
@@ -371,7 +371,7 @@ export default class XWeight extends React.Component
                     <CardColumnContainer>
 						<ContentText style={{marginBottom: Dimens.smallIntervalValue, color: this.props.titleColour}}>{Strings.weightScreen_cardWeight_title}</ContentText>
                         <CardRowContainer style={{marginBottom: Dimens.smallIntervalValue, alignItems: 'flex-end'}}>
-                            <BoldPrimaryText style={{color: this.props.primaryContentColour, fontSize: Dimens.cardBigTextSizeValue}}>{this.state.weight}</BoldPrimaryText>
+                            <BoldPrimaryText style={{color: this.props.primaryContentColour, fontSize: Dimens.cardBigTextSizeValue}}>{this.state.weight === null ? Strings.placeholder : this.state.weight}</BoldPrimaryText>
                             <ExplanationText style={{marginBottom: 7, color: this.props.explanationColour}}>{Strings.weightUnit}</ExplanationText>
                         </CardRowContainer>
 						<ExplanationText style={{marginBottom: Dimens.paddingValue, color: this.props.explanationColour}}>{Strings.goalHeader + (this.state.weightGoal === null ? Strings.placeholder : this.state.weightGoal) + Strings.weightUnit}</ExplanationText>

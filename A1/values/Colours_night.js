@@ -1,10 +1,10 @@
 /*
  * @Description: a dark-mode-specific colour dictionary
- * @Version: 1.0.4.20200426
+ * @Version: 1.0.5.20200427
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 14:35:04
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-26 22:26:24
+ * @LastEditTime: 2020-04-27 06:08:39
  */
 
 export default
@@ -17,7 +17,7 @@ export default
     cardWeightBackground: '#0067d6',
     cardWeightBackground_pressed: '#2781e3',
     contentText: '#979797',
-    defaultBadgeBackground: '#1C1C1E',
+    defaultBadgeBackground: '#f77728',
     defaultCardBackground: '#1C1C1E',
     errorBackground: '#ff6666',
     explanationText: '#999999',
