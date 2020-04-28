@@ -1,10 +1,10 @@
 /*
  * @Description: a pedometer component
- * @Version: 1.0.7.20200427
+ * @Version: 1.1.0.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-27 22:25:23
+ * @LastEditTime: 2020-04-28 11:02:40
  */
 
 import React from 'react';
@@ -135,8 +135,12 @@ export default class XPedometer extends React.Component
                 this.setState({
                     stepGoal: indexSaved === null ? null : 1000 * (JSON.parse(indexSaved) + 1)
                 });
+                this.updateProgress(this.state.todayStepCount);
             }).catch((e) =>
             {
+                this.setState({
+                    progress: 0
+                });
                 console.log('Failed to get the step goal preference data saved. ' + e);
             });
     };
@@ -152,6 +156,31 @@ export default class XPedometer extends React.Component
             {
                 console.log('Failed to get the weight goal preference data saved. ' + e);
             });
+    };
+
+    updateProgress = (todayStepCount) =>
+    {
+        var currentProgress = null;
+
+        if (this.state.stepGoal === Strings.placeholder || this.state.stepGoal === null)
+        {
+            currentProgress = 0;
+        }
+        else
+        {
+            if (todayStepCount > this.state.stepGoal)
+            {
+                currentProgress = 100;
+            }
+            else
+            {
+                currentProgress = parseInt(todayStepCount * 100 / this.state.stepGoal);
+            } // end if...else
+        } // end if...else
+
+        this.setState({
+            progress: currentProgress
+        });
     };
 
     _subscribe = () =>
@@ -188,41 +217,38 @@ export default class XPedometer extends React.Component
         this.getStepGoalSaved();
         this.getWeightGoalSaved();
 
-        const end_today = new Date();
         const start_today = new Date();
-
+        
         start_today.setHours(0, 0, 0, 0);
-
-        // set the time range to today to get the step count
-        Pedometer.getStepCountAsync(start_today, end_today).then(result =>
+        
+        // get the step count before the start up date and time to avoid different temp step counts in various screens
+        Pedometer.getStepCountAsync(start_today, this.props.startUpDateTime).then(result =>
             {
-                if (this.state.stepGoal === Strings.placeholder || this.state.stepGoal === null)
-                {
-                    this.currentProgress = 0;
-                }
-                else
-                {
-                    if (result.steps > this.state.stepGoal)
-                    {
-                        this.currentProgress = 100;
-                    }
-                    else
-                    {
-                        this.currentProgress = parseInt(result.steps * 100 / this.state.stepGoal);
-                    } // end if...else
-                } // end if...else
-
                 this.setState({
                     todayStepCount_temp: result.steps,
-                    todayStepCount: result.steps,
-                    todayStepCountError: null,
-                    progress: this.currentProgress
+                    todayStepCountError: null
                 });
             },
             error =>
             {
                 this.setState({
                     todayStepCount_temp: 0,
+                    todayStepCountError: error
+                });
+            });
+
+        // set the time range to today to get the step count
+        Pedometer.getStepCountAsync(start_today, this.props.endToday).then(result =>
+            {
+                this.setState({
+                    todayStepCount: result.steps,
+                    todayStepCountError: null
+                });
+                this.updateProgress(this.state.todayStepCount);
+            },
+            error =>
+            {
+                this.setState({
                     todayStepCount: 0,
                     todayStepCountError: error,
                     progress: 0
@@ -234,6 +260,11 @@ export default class XPedometer extends React.Component
                 this.setState({
                     todayStepCount: this.state.todayStepCount_temp + result.steps
                 })
+                this.updateProgress(this.state.todayStepCount);
+                console.log(this.state.todayStepCount_temp); // TODO:
+                console.log(result.steps);
+                console.log(this.state.todayStepCount);
+                console.log('------');
             });
 
         // get the past 7 days worth of step data for creating a bar chart

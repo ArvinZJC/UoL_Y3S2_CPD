@@ -1,10 +1,10 @@
 /*
  * @Description: a string dictionary
- * @Version: 1.0.5.20200427
+ * @Version: 1.0.6.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 11:20:00
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-27 00:36:18
+ * @LastEditTime: 2020-04-28 11:04:05
  */
 
 export default
@@ -20,7 +20,7 @@ export default
     stepUnit: ' steps',
     heightUnit: ' cm',
     weightUnit: ' kg',
-    goalHeader: 'Goals: ',
+    goalHeader: 'Goal: ',
     aboutAppExplanation_start: 'Version: ',
     homeScreen_label: 'Home',
     settingsScreen_title: 'Settings',

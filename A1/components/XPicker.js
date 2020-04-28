@@ -1,10 +1,10 @@
 /*
  * @Description: a picker component
- * @Version: 1.0.1.20200426
+ * @Version: 1.0.2.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-25 02:03:06
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-26 14:39:42
+ * @LastEditTime: 2020-04-28 11:35:59
  */
 
 import React from 'react';
@@ -186,18 +186,18 @@ export const XBirthdayPicker = (props) =>
 {
     getBirthdaySaved();
 
-    const selectRef = React.createRef();
+    const datepickerRef = React.createRef();
     const [date, setDate] = React.useState(userPreferenceBirthday);
 
     const maxDate = new Date(); // today
     const minDate = new Date(maxDate.getFullYear() - 120, 0, 1); // the first day of 120 years ago
 
     return(
-        <TouchableHighlight onPress={() => selectRef.current.isFocused() ? selectRef.current.blur() : selectRef.current.focus()}  underlayColor={props.underlayColour}>
+        <TouchableHighlight onPress={() => datepickerRef.current.isFocused() ? datepickerRef.current.blur() : datepickerRef.current.focus()}  underlayColor={props.underlayColour}>
 			<SettingRowContainer>
 				<ContentText style={{color: props.titleColour}}>{Strings.settingsScreen_sectionBasicInfo_birthdayTitle}</ContentText>
 				<Datepicker
-                    ref={selectRef}
+                    ref={datepickerRef}
                     date={date}
                     onSelect={newDate =>
                         {
@@ -218,7 +218,8 @@ export const XBirthdayPicker = (props) =>
                     startView={CalendarViewModes.YEAR}
                     size={Attributes.smallPicker}
                     placeholder={Strings.placeholder}
-                    accessoryRight={calendarIcon} />
+                    accessoryRight={calendarIcon}
+                    placement='bottom end' />
 			</SettingRowContainer>
 		</TouchableHighlight>
     );

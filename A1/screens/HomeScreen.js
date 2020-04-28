@@ -1,10 +1,10 @@
 /*
  * @Description: the home screen
- * @Version: 1.0.7.20200428
+ * @Version: 1.1.0.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-01 23:10:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-28 01:59:05
+ * @LastEditTime: 2020-04-28 10:41:56
  */
 
 import React from 'react';
@@ -35,12 +35,15 @@ export default function HomeScreen()
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
+	const startUpDateTime = new Date(); // this is set and passed to the steps screen to avoid different initial values during the synchronous update
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
 			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<XPedometer
 				contentTypeId={Attributes.alertContentTypeId}
+				startUpDateTime={startUpDateTime}
+				endToday={startUpDateTime}
 				errorBackgroundColour={colours.errorBackground}
 				warningBackgroundColour={colours.warningBackground}
 				successBackgroundColour={colours.successBackground}
@@ -61,11 +64,13 @@ export default function HomeScreen()
 					</Card>
 				</ImageArea>
 				<Card style={{backgroundColor: colours.cardStepsBackground, shadowColor: colours.cardShadowColour}}>
-					<CardTouchArea onPress={() => navigation.navigate(Attributes.stepsScreenRoute)} underlayColor={colours.cardStepsBackground_pressed}>
+					<CardTouchArea onPress={() => navigation.navigate(Attributes.stepsScreenRoute, {start_up: startUpDateTime})} underlayColor={colours.cardStepsBackground_pressed}>
 						<CardContentArea>
 							<BoldPrimaryText style={{color: colours.cardPrimaryText}}>{Strings.stepsScreen_title}</BoldPrimaryText>
 							<XPedometer
 								contentTypeId={Attributes.contentWithProgressTypeId}
+								startUpDateTime={startUpDateTime}
+								endToday={startUpDateTime}
 								textColour={colours.cardPrimaryText}
 								circularProgressBackgroundColour={colours.translucentBackground} />
 						</CardContentArea>

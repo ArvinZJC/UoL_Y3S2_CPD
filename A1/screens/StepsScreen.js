@@ -1,10 +1,10 @@
 /*
  * @Description: the steps screen
- * @Version: 1.0.6.20200428
+ * @Version: 1.1.0.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 15:15:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-28 02:05:23
+ * @LastEditTime: 2020-04-28 10:43:24
  */
 
 import React from 'react';
@@ -24,22 +24,24 @@ import {
 import XPedometer from '../components/XPedometer';
 
 
-export default function StepsScreen()
+export default function StepsScreen({route})
 {
 	const colourScheme = useColorScheme();
 	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
+	const {start_up} = route.params;
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
 			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<XPedometer
 				contentTypeId={Attributes.alertContentTypeId}
+				startUpDateTime={start_up}
+				endToday={new Date()}
 				errorBackgroundColour={colours.errorBackground}
 				warningBackgroundColour={colours.warningBackground}
 				successBackgroundColour={colours.successBackground}
 				borderColour={colours.appTheme}
-				textColour={colours.cardPrimaryText}
-				goal={10000} />
+				textColour={colours.cardPrimaryText} />
 			<MainContentArea>
 				<Card style={{
 					marginTop: Dimens.paddingValue,
@@ -58,6 +60,8 @@ export default function StepsScreen()
 				<Card style={{backgroundColor: colours.defaultCardBackground, shadowColor: colours.cardShadowColour}}>
 					<CardContentArea>
 						<XPedometer
+							startUpDateTime={start_up}
+							endToday={new Date()}
 							titleColour={colours.contentText}
 							primaryContentColour={colours.primaryText}
 							explanationColour={colours.explanationText} />
@@ -70,6 +74,8 @@ export default function StepsScreen()
 					<CardContentArea>
 						<XPedometer
 							contentTypeId={Attributes.extraStepInfoContentTypeId}
+							startUpDateTime={start_up}
+							endToday={new Date()}
 							titleColour={colours.contentText}
 							primaryContentColour={colours.primaryText}
 							explanationColour={colours.explanationText} />
