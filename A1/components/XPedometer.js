@@ -4,7 +4,7 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-28 20:27:50
+ * @LastEditTime: 2020-04-28 22:15:26
  */
 
 import React from 'react';
@@ -514,7 +514,9 @@ export default class XPedometer extends React.Component
                         {
                             if (this.state.todayStepCountError === null)
                             {
-                                if (this.state.todayStepCount >= this.state.stepGoal)
+                                if (this.state.stepGoal !== Strings.placeholder
+                                    && this.state.stepGoal !== null
+                                    && this.state.todayStepCount >= this.state.stepGoal)
                                 {
                                     if (this.warningMessageImportantInfo === null)
                                     {
