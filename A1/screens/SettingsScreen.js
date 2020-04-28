@@ -1,10 +1,10 @@
 /*
  * @Description: the settings screen
- * @Version: 1.0.3.20200426
+ * @Version: 1.0.4.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 08:41:47
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-26 12:56:57
+ * @LastEditTime: 2020-04-28 02:03:21
  */
 
 import React from 'react';
@@ -39,7 +39,7 @@ export default function SettingsScreen()
 {
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 
 	React.useLayoutEffect(() =>
 		{
@@ -66,7 +66,7 @@ export default function SettingsScreen()
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
-			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
+			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<MainContentArea>
 				<Section style={{marginTop: Dimens.paddingValue}}>
 					<SectionHeader>

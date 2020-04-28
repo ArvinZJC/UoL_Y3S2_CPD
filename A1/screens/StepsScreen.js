@@ -1,10 +1,10 @@
 /*
  * @Description: the steps screen
- * @Version: 1.0.5.20200428
+ * @Version: 1.0.6.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 15:15:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-28 01:58:28
+ * @LastEditTime: 2020-04-28 02:05:23
  */
 
 import React from 'react';
@@ -51,7 +51,7 @@ export default function StepsScreen()
 						chartConfig={{
 							backgroundGradientFrom: colours.defaultCardBackground,
 							backgroundGradientTo: colours.defaultCardBackground,
-							color: (opacity = 1) => colourScheme === 'light' ? `rgba(51, 51, 51, ${opacity})` : `rgba(242, 242, 247, ${opacity})`, // primary text colour
+							color: (opacity = 1) => colourScheme === 'dark' ? `rgba(242, 242, 247, ${opacity})` : `rgba(51, 51, 51, ${opacity})`, // primary text colour
 							barPercentage: Dimens.barPercentage
 						}} />
 				</Card>
