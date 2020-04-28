@@ -4,7 +4,7 @@
  * @Author: Jichen Zhao
  * @Date: 2020-04-23 14:47:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-28 11:02:40
+ * @LastEditTime: 2020-04-28 16:24:05
  */
 
 import React from 'react';
@@ -261,10 +261,6 @@ export default class XPedometer extends React.Component
                     todayStepCount: this.state.todayStepCount_temp + result.steps
                 })
                 this.updateProgress(this.state.todayStepCount);
-                console.log(this.state.todayStepCount_temp); // TODO:
-                console.log(result.steps);
-                console.log(this.state.todayStepCount);
-                console.log('------');
             });
 
         // get the past 7 days worth of step data for creating a bar chart
