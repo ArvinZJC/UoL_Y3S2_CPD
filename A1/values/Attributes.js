@@ -1,17 +1,17 @@
 /*
  * @Description: a universal attribute dictionary
- * @Version: 1.0.1.20200426
+ * @Version: 1.0.2.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-25 21:07:35
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-26 23:46:26
+ * @LastEditTime: 2020-04-28 02:00:37
  */
 
 export default
 {
     aboutScreenRoute: 'About',
     alertContentTypeId: 'alert',
-    appVersion: '1.0.0',
+    appVersion: '1.0.1',
     backListenerKey: 'GO_BACK',
     bmiContentTypeId: 'currentBmi',
     chartContentTypeId: 'chart',

@@ -1,10 +1,10 @@
 /*
  * @Description: the weight screen
- * @Version: 1.0.2.20200427
+ * @Version: 1.0.3.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-24 22:50:58
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-27 00:58:38
+ * @LastEditTime: 2020-04-28 01:58:36
  */
 
 import React from 'react';
@@ -28,11 +28,11 @@ import XWeight from '../components/XWeight';
 export default function WeightScreen()
 {
 	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
-			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
+			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<XWeight
 				contentTypeId={Attributes.alertContentTypeId}
 				warningBackgroundColour={colours.warningBackground}

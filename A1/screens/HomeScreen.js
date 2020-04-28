@@ -1,10 +1,10 @@
 /*
  * @Description: the home screen
- * @Version: 1.0.6.20200426
+ * @Version: 1.0.7.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-01 23:10:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-26 22:26:46
+ * @LastEditTime: 2020-04-28 01:59:05
  */
 
 import React from 'react';
@@ -34,11 +34,11 @@ export default function HomeScreen()
 {
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
-			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
+			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<XPedometer
 				contentTypeId={Attributes.alertContentTypeId}
 				errorBackgroundColour={colours.errorBackground}

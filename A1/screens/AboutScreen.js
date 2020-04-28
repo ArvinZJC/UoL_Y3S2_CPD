@@ -1,10 +1,10 @@
 /*
  * @Description: the screen of the brief introduction of the app
- * @Version: 1.0.0.20200425
+ * @Version: 1.0.1.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-25 16:37:28
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-25 21:34:41
+ * @LastEditTime: 2020-04-28 01:57:11
  */
 
 import React from 'react';
@@ -29,11 +29,11 @@ import {
 export default function AboutScreen()
 {
 	const colourScheme = useColorScheme();
-    const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+    const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
-			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
+			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<RootLayout style={{justifyContent: 'space-between', paddingHorizontal: Dimens.marginValue}}>
                 <ImageArea>
                     <Card style={{

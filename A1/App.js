@@ -1,10 +1,10 @@
 /*
  * @Description: the entry file of the app
- * @Version: 1.0.6.20200427
+ * @Version: 1.0.7.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-03-31 13:44:57
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-27 03:25:15
+ * @LastEditTime: 2020-04-28 01:56:10
  */
 
 import 'react-native-gesture-handler'; // follow the official guides to add it at the top to avoid any crashes in production
@@ -39,7 +39,7 @@ function SettingsButton()
 {
 	const navigation = useNavigation();
 	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 	
 	const SettingsButtonArea = styled.TouchableHighlight`
 		width: ${Dimens.toolbarRightButtonIconSize * 2}px;
@@ -63,7 +63,7 @@ function SettingsButton()
 export default function App()
 {
 	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 	
 	console.disableYellowBox = true; // uncomment it when finishing implementation
 
@@ -78,7 +78,7 @@ export default function App()
 	return(
 		<>
 			<IconRegistry icons={EvaIconsPack} />
-			<ApplicationProvider {...eva} theme={colourScheme === 'light' ? eva.light : eva.dark}>
+			<ApplicationProvider {...eva} theme={colourScheme === 'dark' ? eva.dark : eva.light}>
 				<AppearanceProvider>
 					<NavigationContainer>
 						<Stack.Navigator

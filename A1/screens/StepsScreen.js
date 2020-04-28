@@ -1,10 +1,10 @@
 /*
  * @Description: the steps screen
- * @Version: 1.0.4.20200426
+ * @Version: 1.0.5.20200428
  * @Author: Jichen Zhao
  * @Date: 2020-04-02 15:15:11
  * @Last Editors: Jichen Zhao
- * @LastEditTime: 2020-04-26 17:01:29
+ * @LastEditTime: 2020-04-28 01:58:28
  */
 
 import React from 'react';
@@ -27,11 +27,11 @@ import XPedometer from '../components/XPedometer';
 export default function StepsScreen()
 {
 	const colourScheme = useColorScheme();
-	const colours = colourScheme === 'light' ? Colours_default : Colours_night;
+	const colours = colourScheme === 'dark' ? Colours_night : Colours_default;
 	
 	return(
 		<RootLayout style={{backgroundColor: colours.appTheme}}>
-			<StatusBar barStyle={colourScheme === 'light' ? 'dark-content' : 'light-content'} backgroundColor={colours.appTheme} />
+			<StatusBar barStyle={colourScheme === 'dark' ? 'light-content' : 'dark-content'} backgroundColor={colours.appTheme} />
 			<XPedometer
 				contentTypeId={Attributes.alertContentTypeId}
 				errorBackgroundColour={colours.errorBackground}
